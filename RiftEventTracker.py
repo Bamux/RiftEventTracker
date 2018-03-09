@@ -9,10 +9,8 @@ import os
 import codecs
 import configparser
 from collections import OrderedDict
-
-
-print("Rift Eventtracker 0.1")
-configfile = "config.ini"
+from tkinter import filedialog
+from tkinter import *
 
 
 def read_config(configfile):
@@ -79,22 +77,23 @@ def webapi(zoneid):
                         if not condition:
                             for item in zoneid:
                                 if item == str(zone['zoneId']):
-                                    eventexist = False
-                                    for started in eventlist:
-                                        if zone['started'] == started[0]:
-                                            if zone['zoneId'] == started[1]:
-                                                eventexist = True
-                                    if not eventexist:
-                                        output += [[zone['started'],zoneid[item], shards[serverlocation][shardid],
-                                                    zone['name']]]
-                                        eventlist += [(zone['started'], zone['zoneId'])]
+                                    output += [[zone['started'], zoneid[item], shards[serverlocation][shardid],
+                                                zone['name']]]
         output.sort()
+        T.delete('1.0', END)
         for item in output:
             datetime = time.localtime(item[0])
-            print(time.strftime("%X - Zone: ", datetime) + item[1] + " - Shard: " + item[2] + " - Event: " + item[3])
-            if not first_run:
-                text = "Event in " + item[1] + " on " + item[2]
-                Thread(target=saytext, args=(text,)).start()
+            guioutput= (" " + time.strftime("%X - Zone: ", datetime) + item[1] + " - Shard: " + item[2] + " - Event: " + item[3] + '\n')
+            T.insert(END, guioutput)
+            eventexist = False
+            for started in eventlist:
+                if item[0] == started[0]:
+                    eventexist = True
+            if not eventexist:
+                eventlist += [(item[0], item[1])]
+                if not first_run:
+                    text = "Event in " + item[1] + " on " + item[2]
+                    Thread(target=saytext, args=(text,)).start()
         if first_run:
             first_run = False
         time.sleep(15)
@@ -104,6 +103,11 @@ def saytext(say):
     pythoncom.CoInitializeEx(pythoncom.COINIT_MULTITHREADED)
     speak.Volume = int(config['Settings']['volume'])
     speak.Speak(say)
+
+
+def ask_quit():
+    root.destroy()
+    os._exit(1)
 
 
 zones = {
@@ -170,7 +174,26 @@ shards = {
   }
 }
 
+configfile = "config.ini"
 config = read_config(configfile)
 speak = win32com.client.Dispatch('Sapi.SpVoice')
 zoneid = zones_to_track()
-webapi(zoneid)
+
+# GUI
+root = Tk()
+root.title("Rift Event Tracker")
+root.geometry("800x300")
+S = Scrollbar(root)
+T = Text(root, height=300, width=800)
+S.pack(side=RIGHT, fill=Y)
+T.pack(side=LEFT, fill=Y)
+S.config(command=T.yview)
+T.config(yscrollcommand=S.set)
+Thread(target=webapi, args=(zoneid,)).start()
+root.protocol("WM_DELETE_WINDOW", ask_quit)
+mainloop()
+
+
+
+
+
