@@ -8,4 +8,4 @@ serverlocation = eu # eu or na<br>
 volume = 50 # 0-100<br>
 unstable_events = yes #yes or no<br>
 
-Example:<br># ZonID = Zonename (this line is a example how you deaktivate a zone)
+[Zone]:<br># ZonID = Zonename (this line is a example how you deaktivate a zone)
