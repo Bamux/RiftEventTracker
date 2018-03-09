@@ -83,7 +83,7 @@ def webapi(zoneid):
         T.delete('1.0', END)
         for item in output:
             datetime = time.localtime(item[0])
-            guioutput= (" " + time.strftime("%X - Zone: ", datetime) + item[1] + " - Shard: " + item[2] + " - Event: " + item[3] + '\n')
+            guioutput= (" " + time.strftime("%X - ", datetime) + item[1] + " - " + item[2] + " - " + item[3] + '\n')
             T.insert(END, guioutput)
             eventexist = False
             for started in eventlist:
