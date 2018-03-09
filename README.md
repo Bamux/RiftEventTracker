@@ -1,4 +1,4 @@
-# RiftEventTracker
+# RiftEventTracker 0,2
 Event Tracker for the MMORPG Rift
 
 Download latest Version: https://github.com/Bamux/RiftEventTracker/archive/master.zip
