@@ -191,9 +191,5 @@ S.config(command=T.yview)
 T.config(yscrollcommand=S.set)
 Thread(target=webapi, args=(zoneid,)).start()
 root.protocol("WM_DELETE_WINDOW", ask_quit)
+root.wm_attributes("-topmost", 1)
 mainloop()
-
-
-
-
-
