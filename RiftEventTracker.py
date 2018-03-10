@@ -1,7 +1,6 @@
 import requests
 import json
 import time
-import locale
 import win32com.client
 import pythoncom
 from threading import Thread
@@ -12,7 +11,6 @@ import configparser
 from collections import OrderedDict
 from tkinter import *
 
-
 def read_config(configfile):
     if os.path.isfile(configfile):
         config = configparser.ConfigParser()
@@ -22,23 +20,30 @@ def read_config(configfile):
         config = write_new_config(configfile)
         return config
 
-
 def write_new_config(configfile):
     config = configparser.ConfigParser()
     config['Settings'] = {}
     settings = config['Settings']
     settings['serverlocation'] = 'eu'
+    settings['voice'] = 'yes'
     settings['volume'] = '100'
     settings['unstable_events'] = 'no'
+    config['GUI'] = {}
+    gui = config['GUI']
+    gui['x'] = '325'
+    gui['y'] = '200'
+    gui['width'] = '400'
+    gui['height'] = '154'
+    gui['background'] = 'black'
+    gui['foreground'] = 'white'
+    gui['alpha'] = '0.7'
+    gui['borderless'] = 'no'
     expansions = sorted(zones.keys())
     for expansion in expansions:
         sorted_zones = sorted(zones[expansion].items(), key=lambda x: x[1])
         config[expansion] = {}
         for zone in sorted_zones:
-            if expansion == "Prophecy of Ahnket":
-                config[expansion][str(zone[0])] = str(zone[1])
-            else:
-                config[expansion]['# ' + str(zone[0])] = str(zone[1])
+            config[expansion][str(zone[0])] = str(zone[1])
     with open(configfile, 'w') as configfile:
         config.write(configfile)
     return config
@@ -47,11 +52,10 @@ def write_new_config(configfile):
 def zones_to_track():
     zoneid = {}
     for item in config:
-        if item != "Settings":
+        if item != "Settings" and item != "GUI":
             for key, value in config[item].items():
                 zoneid[key] = value
     return zoneid
-
 
 def webapi(zoneid):
     eventlist = []
@@ -80,63 +84,56 @@ def webapi(zoneid):
                                     output += [[zone['started'], zoneid[item], shards[serverlocation][shardid],
                                                 zone['name']]]
         output.sort(reverse=True)
-        # T.delete('1.0', END)
         guioutput = ""
         for item in output:
             min = str(int( math.floor((time.time() - item[0]) / 60) ))
             min = '{:02}'.format(int(min))
-            # min = str(int((time.time() - item[0]) / 60))
-            # datetime = time.localtime(test)
-            # guioutput += (" " + time.strftime("%M  ", test) + item[1] + " | " + item[2] + " | " + item[3] + '\n')
             guioutput += (" " +  min + " m  " + item[1] + " | " + item[2] + " | " + item[3] + '\n')
-            # T.insert(END, guioutput)
-            eventexist = False
-            for started in eventlist:
-                if item[0] == started[0]:
-                    eventexist = True
-            if not eventexist:
-                eventlist += [(item[0], item[1])]
-                if not first_run:
-                    text = "Event in " + item[1] + " on " + item[2]
-                    Thread(target=saytext, args=(text,)).start()
+            if config['Settings']['voice'] == "yes":
+                eventexist = False
+                for started in eventlist:
+                    if item[0] == started[0]:
+                        eventexist = True
+                if not eventexist:
+                    eventlist += [(item[0], item[1])]
+                    if not first_run:
+                        text = "Event in " + item[1] + " on " + item[2]
+                        Thread(target=saytext, args=(text,)).start()
         if first_run:
             first_run = False
         v.set(guioutput)
         time.sleep(15)
-
 
 def saytext(say):
     pythoncom.CoInitializeEx(pythoncom.COINIT_MULTITHREADED)
     speak.Volume = int(config['Settings']['volume'])
     speak.Speak(say)
 
-
 def ask_quit():
+    global configfile
+    config['GUI']['x'] = (str(root.winfo_x()))
+    config['GUI']['y'] = (str(root.winfo_y()))
+    config['GUI']['width'] = (str(root.winfo_width()))
+    config['GUI']['height'] = (str(root.winfo_height()))
+    with open(configfile, 'w') as configfile:
+        config.write(configfile)
     root.destroy()
     os._exit(1)
 
-
 def leftclick(event):
-    # print(config["Settings"]['borderless'])
-    if config["Settings"]['borderless'] == "off":
+    if config["GUI"]['borderless'] == "no":
         root.overrideredirect(1)
-        config["Settings"]['borderless'] = "on"
+        config["GUI"]['borderless'] = "yes"
     else:
         root.overrideredirect(0)  # Remove border
-        config["Settings"]['borderless'] = "off"
+        config["GUI"]['borderless'] = "no"
 
 def middleclick(event):
     pass
 
-
 def rightclick(event):
-    if config["Settings"]['borderless'] == "off":
-        root.overrideredirect(1)
-        config["Settings"]['borderless'] = "on"
-    else:
-        root.overrideredirect(0)
-        config["Settings"]['borderless'] = "off"
-
+    time.sleep(0.3)
+    ask_quit()
 
 zones = {
     'Prophecy of Ahnket': {
@@ -204,33 +201,26 @@ shards = {
 
 configfile = "config.ini"
 config = read_config(configfile)
-config["Settings"]['borderless'] = "off"
 speak = win32com.client.Dispatch('Sapi.SpVoice')
 zoneid = zones_to_track()
-Thread(target=webapi, args=(zoneid,)).start()
 
 
 # GUI
 root = Tk()
 COLOR = "black"
-root.title("Rift Event Tracker")
-root.geometry("400x154")
-# root.geometry("+325+200")
-# root.overrideredirect(1) #Remove border
-
-# frame = Frame(root, width=400, height=152)
+root.title("Rift Event Tracker v0.4")
+root.geometry(config['GUI']['width'] + "x" + config['GUI']['height'])
+root.geometry("+" + config['GUI']['x'] + "+" + config['GUI']['y'])
 root.bind("<Button-1>", leftclick)
 root.bind("<Button-2>", middleclick)
-root.bind("<Button-3>", rightclick)
-# frame.pack()
-
-
+test = root.bind("<Button-3>", rightclick)
 v = StringVar()
-Label(root, textvariable=v, anchor=NW, justify=LEFT,width=400,height=154, bg="black", fg="white").pack()
-v.set("New Text!")
-v.set("New Text2!")
+Label(root, textvariable=v, anchor=NW, justify=LEFT,width=config['GUI']['width'],height=config['GUI']['height'],
+      bg=config['GUI']['background'], fg=config['GUI']['foreground']).pack()
 root.protocol("WM_DELETE_WINDOW", ask_quit)
-root.attributes('-alpha',0.7)
+root.attributes('-alpha',config['GUI']['alpha'])
 root.wm_attributes("-topmost", 1)
-
+if config["GUI"]['borderless'] == "yes":
+    root.overrideredirect(1)
+Thread(target=webapi, args=(zoneid,)).start()
 mainloop()
