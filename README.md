@@ -1,5 +1,6 @@
-# RiftEventTracker 0.3.1
+# RiftEventTracker 0.4
 Event Tracker for the MMORPG Rift
+https://cdn.discordapp.com/attachments/374932500910309379/422081814950313984/unknown.png
 
 Download latest Version: https://github.com/Bamux/RiftEventTracker/archive/master.zip
 
