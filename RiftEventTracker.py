@@ -110,6 +110,7 @@ def saytext(say):
 
 def ask_quit():
     global configfile
+    print(borderless)
     if os.path.isfile(configfile):
         config = configparser.ConfigParser()
         config.read(configfile)
@@ -117,18 +118,21 @@ def ask_quit():
     config['GUI']['y'] = (str(root.winfo_y()))
     config['GUI']['width'] = (str(root.winfo_width()))
     config['GUI']['height'] = (str(root.winfo_height()))
+    config["GUI"]['borderless'] = borderless
     with open(configfile, 'w') as configfile:
         config.write(configfile)
     root.destroy()
     os._exit(1)
 
 def leftclick(event):
-    if config["GUI"]['borderless'] == "no":
+    global borderless
+    if borderless == "no":
         root.overrideredirect(1)
-        config["GUI"]['borderless'] = "yes"
+        borderless = "yes"
     else:
         root.overrideredirect(0)  # Remove border
-        config["GUI"]['borderless'] = "no"
+        borderless = "no"
+
 
 def middleclick(event):
     pass
@@ -205,6 +209,7 @@ configfile = "config.ini"
 config = read_config(configfile)
 speak = win32com.client.Dispatch('Sapi.SpVoice')
 zoneid = zones_to_track()
+borderless =  config["GUI"]['borderless']
 
 # GUI
 root = Tk()
