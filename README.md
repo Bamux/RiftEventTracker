@@ -11,7 +11,7 @@ Features:
 - start RiftEventTracker.exe
 - with left mouse click on the Rift Event Tracker window you can start/end the borderless modus
 - with right mouse click you can close the window
-- if you want to use the overlay display in Rift you have to run Rift in the Fullscreen Windowed Mode
+- if you want to use the overlay display in Rift you have to use Rift in the Fullscreen Windowed Mode
 ![Rift Settings](https://cdn.discordapp.com/attachments/374932500910309379/422085099841126400/unknown.png)
 
 ## Configuration:
