@@ -8,9 +8,9 @@ Features:
 - Overlay display of running events
 
 ## Instructions:
+- start RiftEventTracker.exe
 - If you want to use the overlay display you have to run Rift in the Fullscreen Windowed Mode
 ![Rift Settings](https://cdn.discordapp.com/attachments/374932500910309379/422085099841126400/unknown.png)
-- start RiftEventTracker.exe
 
 ## Configuration:
 - the configuration of the program is done via the config. ini here you can deactivate/activate the zones to be tracked
