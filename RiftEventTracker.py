@@ -6,10 +6,10 @@ import win32com.client
 import pythoncom
 from threading import Thread
 import os
+import math
 import codecs
 import configparser
 from collections import OrderedDict
-from tkinter import filedialog
 from tkinter import *
 
 
@@ -79,12 +79,17 @@ def webapi(zoneid):
                                 if item == str(zone['zoneId']):
                                     output += [[zone['started'], zoneid[item], shards[serverlocation][shardid],
                                                 zone['name']]]
-        output.sort()
-        T.delete('1.0', END)
+        output.sort(reverse=True)
+        # T.delete('1.0', END)
+        guioutput = ""
         for item in output:
-            datetime = time.localtime(item[0])
-            guioutput= (" " + time.strftime("%X - ", datetime) + item[1] + " - " + item[2] + " - " + item[3] + '\n')
-            T.insert(END, guioutput)
+            min = str(int( math.floor((time.time() - item[0]) / 60) ))
+            min = '{:02}'.format(int(min))
+            # min = str(int((time.time() - item[0]) / 60))
+            # datetime = time.localtime(test)
+            # guioutput += (" " + time.strftime("%M  ", test) + item[1] + " | " + item[2] + " | " + item[3] + '\n')
+            guioutput += (" " +  min + " m  " + item[1] + " | " + item[2] + " | " + item[3] + '\n')
+            # T.insert(END, guioutput)
             eventexist = False
             for started in eventlist:
                 if item[0] == started[0]:
@@ -96,6 +101,7 @@ def webapi(zoneid):
                     Thread(target=saytext, args=(text,)).start()
         if first_run:
             first_run = False
+        v.set(guioutput)
         time.sleep(15)
 
 
@@ -108,6 +114,28 @@ def saytext(say):
 def ask_quit():
     root.destroy()
     os._exit(1)
+
+
+def leftclick(event):
+    # print(config["Settings"]['borderless'])
+    if config["Settings"]['borderless'] == "off":
+        root.overrideredirect(1)
+        config["Settings"]['borderless'] = "on"
+    else:
+        root.overrideredirect(0)  # Remove border
+        config["Settings"]['borderless'] = "off"
+
+def middleclick(event):
+    pass
+
+
+def rightclick(event):
+    if config["Settings"]['borderless'] == "off":
+        root.overrideredirect(1)
+        config["Settings"]['borderless'] = "on"
+    else:
+        root.overrideredirect(0)
+        config["Settings"]['borderless'] = "off"
 
 
 zones = {
@@ -176,20 +204,33 @@ shards = {
 
 configfile = "config.ini"
 config = read_config(configfile)
+config["Settings"]['borderless'] = "off"
 speak = win32com.client.Dispatch('Sapi.SpVoice')
 zoneid = zones_to_track()
+Thread(target=webapi, args=(zoneid,)).start()
+
 
 # GUI
 root = Tk()
+COLOR = "black"
 root.title("Rift Event Tracker")
-root.geometry("700x200")
-S = Scrollbar(root)
-T = Text(root, height=200, width=700)
-S.pack(side=RIGHT, fill=Y)
-T.pack(side=LEFT, fill=Y)
-S.config(command=T.yview)
-T.config(yscrollcommand=S.set)
-Thread(target=webapi, args=(zoneid,)).start()
+root.geometry("400x154")
+# root.geometry("+325+200")
+# root.overrideredirect(1) #Remove border
+
+# frame = Frame(root, width=400, height=152)
+root.bind("<Button-1>", leftclick)
+root.bind("<Button-2>", middleclick)
+root.bind("<Button-3>", rightclick)
+# frame.pack()
+
+
+v = StringVar()
+Label(root, textvariable=v, anchor=NW, justify=LEFT,width=400,height=154, bg="black", fg="white").pack()
+v.set("New Text!")
+v.set("New Text2!")
 root.protocol("WM_DELETE_WINDOW", ask_quit)
+root.attributes('-alpha',0.7)
 root.wm_attributes("-topmost", 1)
+
 mainloop()
