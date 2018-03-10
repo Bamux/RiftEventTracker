@@ -18,11 +18,11 @@ Features:
 - the configuration of the program is done via the config. ini here you can deactivate/activate the zones to be tracked and change the interface layout
 - to deactivate a zone, simply place a # sign at the beginning of the line or delete the line.
 
-config.ini:<br><br>
-[Settings]<br>
-serverlocation = eu (eu or na)<br>
-voice = yes (0-100) (yes or no)<br>
-volume = 100 (0-100)<br>
-unstable_events = yes (yes or no)<br>
+config.ini:<br>
+  [Settings]<br>
+  serverlocation = eu (eu or na)<br>
+  voice = yes (0-100) (yes or no)<br>
+  volume = 100 (0-100)<br>
+  unstable_events = yes (yes or no)<br>
 
-[Zone]<br># ZonID = Zonename (this line is a example how you deaktivate a zone)
+  [Zone]<br># ZonID = Zonename (this line is a example how you deaktivate a zone)
