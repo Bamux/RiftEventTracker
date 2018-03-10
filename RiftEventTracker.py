@@ -48,7 +48,7 @@ def write_new_config(configfile):
         config.write(configfile)
     return config
 
-def zones_to_track():
+def zones_to_track(config):
     zoneid = {}
     for item in config:
         if item != "Settings" and item != "GUI":
@@ -110,15 +110,29 @@ def saytext(say):
 
 def ask_quit():
     global configfile
-    print(borderless)
     if os.path.isfile(configfile):
         config = configparser.ConfigParser()
         config.read(configfile)
+    zoneid = zones_to_track(config)
+    print(zoneid)
     config['GUI']['x'] = (str(root.winfo_x()))
     config['GUI']['y'] = (str(root.winfo_y()))
     config['GUI']['width'] = (str(root.winfo_width()))
     config['GUI']['height'] = (str(root.winfo_height()))
     config["GUI"]['borderless'] = borderless
+    expansions = sorted(zones.keys())
+    for expansion in expansions:
+        sorted_zones = sorted(zones[expansion].items(), key=lambda x: x[1])
+        config[expansion] = {}
+        for zone in sorted_zones:
+            zoneexist = False
+            for id in zoneid:
+                if str(zone[0]) == id:
+                    zoneexist = True
+            if zoneexist:
+                config[expansion][str(zone[0])] = str(zone[1])
+            else:
+                config[expansion][";" + str(zone[0])] = str(zone[1])
     with open(configfile, 'w') as configfile:
         config.write(configfile)
     root.destroy()
@@ -208,7 +222,7 @@ shards = {
 configfile = "config.ini"
 config = read_config(configfile)
 speak = win32com.client.Dispatch('Sapi.SpVoice')
-zoneid = zones_to_track()
+zoneid = zones_to_track(config)
 borderless =  config["GUI"]['borderless']
 
 # GUI
