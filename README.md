@@ -24,5 +24,3 @@ config.ini:<br>
   voice = yes (yes or no)<br>
   volume = 100 (0-100)<br>
   unstable_events = yes (yes or no)<br>
-
-  [Zone]<br>;ZonID = Zonename ;(this line is a example how you deaktivate a zone)
