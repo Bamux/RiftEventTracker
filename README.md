@@ -16,7 +16,7 @@ Features:
 
 ## Configuration:
 - the configuration of the program is done via the config. ini here you can deactivate/activate the zones to be tracked and change the interface layout
-- to deactivate a zone, simply place a ; at the beginning of the line or delete the line.
+- to deactivate a zone, simply place ; at the beginning of the line or delete the line.
 
 config.ini:<br>
   [Settings]<br>
