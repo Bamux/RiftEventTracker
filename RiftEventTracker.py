@@ -114,7 +114,6 @@ def ask_quit():
         config = configparser.ConfigParser()
         config.read(configfile)
     zoneid = zones_to_track(config)
-    print(zoneid)
     config['GUI']['x'] = (str(root.winfo_x()))
     config['GUI']['y'] = (str(root.winfo_y()))
     config['GUI']['width'] = (str(root.winfo_width()))
