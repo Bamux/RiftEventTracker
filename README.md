@@ -19,7 +19,7 @@ Features:
 - to deactivate a zone, simply place ; at the beginning of the line or delete the line.
 
   [Settings]<br>
-  serverlocation = eu (eu or na)<br>
-  voice = yes (yes or no)<br>
-  volume = 100 (0-100)<br>
-  unstable_events = yes (yes or no)<br>
+  serverlocation = eu or na<br>
+  voice = yes or no<br>
+  volume = 0-100<br>
+  unstable_events = yes or no<br>
