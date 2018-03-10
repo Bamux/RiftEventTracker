@@ -110,6 +110,9 @@ def saytext(say):
 
 def ask_quit():
     global configfile
+    if os.path.isfile(configfile):
+        config = configparser.ConfigParser()
+        config.read(configfile)
     config['GUI']['x'] = (str(root.winfo_x()))
     config['GUI']['y'] = (str(root.winfo_y()))
     config['GUI']['width'] = (str(root.winfo_width()))
