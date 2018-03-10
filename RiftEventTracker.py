@@ -109,7 +109,7 @@ def saytext(say):
     speak.Speak(say)
 
 def ask_quit():
-    global configfile
+    file = configfile
     if os.path.isfile(configfile):
         config = configparser.ConfigParser()
         config.read(configfile)
@@ -132,8 +132,8 @@ def ask_quit():
                 config[expansion][str(zone[0])] = str(zone[1])
             else:
                 config[expansion][";" + str(zone[0])] = str(zone[1])
-    with open(configfile, 'w') as configfile:
-        config.write(configfile)
+    with open(file, 'w') as file:
+        config.write(file)
     root.destroy()
     os._exit(1)
 
