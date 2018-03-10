@@ -20,9 +20,9 @@ Features:
 
 config.ini:<br>
   [Settings]<br>
-  serverlocation = eu (eu or na)<br>
-  voice = yes (0-100) (yes or no)<br>
-  volume = 100 (0-100)<br>
-  unstable_events = yes (yes or no)<br>
+  serverlocation = eu ;(eu or na)<br>
+  voice = yes ;(yes or no)<br>
+  volume = 100 ;(0-100)<br>
+  unstable_events = yes ;(yes or no)<br>
 
-  [Zone]<br># ZonID = Zonename (this line is a example how you deaktivate a zone)
+  [Zone]<br># ZonID = Zonename ;(this line is a example how you deaktivate a zone)
