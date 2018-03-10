@@ -48,7 +48,6 @@ def write_new_config(configfile):
         config.write(configfile)
     return config
 
-
 def zones_to_track():
     zoneid = {}
     for item in config:
@@ -203,7 +202,6 @@ configfile = "config.ini"
 config = read_config(configfile)
 speak = win32com.client.Dispatch('Sapi.SpVoice')
 zoneid = zones_to_track()
-
 
 # GUI
 root = Tk()
