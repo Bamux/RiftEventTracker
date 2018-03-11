@@ -100,8 +100,9 @@ def outputloop(zone_id, serverlocation, unstable_events, voice):
             m = int(math.floor((time.time() - item[0]) / 60))
             if m < 0:
                 m = 0
-            m = '{:02}'.format(m)
-            guioutput += (" " + m + " m  " + item[1] + " | " + item[2] + " | " + item[3] + '\n')
+            if m < 100:
+                m = '{:02}'.format(m)
+                guioutput += (" " + m + " m  " + item[1] + " | " + item[2] + " | " + item[3] + '\n')
             if voice == "yes":
                 eventexist = False
                 for started in eventlist:
