@@ -57,43 +57,52 @@ def zones_to_track(config):
     return zone_id
 
 
-def webapi(zone_id, config):
-    eventlist = []
-    first_run = True
-    unstable_events = config['Settings']['unstable_events']
-    serverlocation = config['Settings']['serverlocation']
+def webapi(serverlocation):
     if serverlocation == 'eu':
         url = "http://web-api-eu.riftgame.com:8080/chatservice/zoneevent/list?shardId="
     else:
         serverlocation = 'na'
         url = "http://web-api-us.riftgame.com:8080/chatservice/zoneevent/list?shardId="
+    return url
+
+
+def get_data(zone_id, serverlocation, url, unstable_events):
+    data_output = []
+    for shardid in shards[serverlocation]:
+        data = json.loads(requests.get(url + str(shardid)).text)['data']
+        if data:
+            for zone in data:
+                if 'started' in zone:
+                    condition = False
+                    if unstable_events == "no":
+                        if 'Unstable' in zone['name'] or 'Instabil' in zone['name'] or 'instable' in zone['name']:
+                            condition = True
+                    if not condition:
+                        for item in zoneid:
+                            if item == str(zone['zoneId']):
+                                data_output += [[zone['started'], zone_id[item], shards[serverlocation][shardid],
+                                                 zone['name']]]
+    data_output.sort(reverse=True)
+    return data_output
+
+
+def outputloop(zone_id, serverlocation, unstable_events, voice):
+    eventlist = []
+    first_run = True
+    url = webapi(serverlocation)
     while True:
+        data_output = get_data(zone_id, serverlocation, url, unstable_events)
         if not root:
             break
-        output = []
-        for shardid in shards[serverlocation]:
-            data = json.loads(requests.get(url + str(shardid)).text)['data']
-            if data:
-                for zone in data:
-                    if 'started' in zone:
-                        condition = False
-                        if unstable_events == "no":
-                            if 'Unstable' in zone['name'] or 'Instabil' in zone['name'] or 'instable' in zone['name']:
-                                condition = True
-                        if not condition:
-                            for item in zoneid:
-                                if item == str(zone['zoneId']):
-                                    output += [[zone['started'], zone_id[item], shards[serverlocation][shardid],
-                                                zone['name']]]
-        output.sort(reverse=True)
+        data_output = get_data(zone_id, serverlocation, url, unstable_events)
         guioutput = ""
-        for item in output:
+        for item in data_output:
             m = int(math.floor((time.time() - item[0]) / 60))
             if m < 0:
                 m = 0
             m = '{:02}'.format(m)
             guioutput += (" " + m + " m  " + item[1] + " | " + item[2] + " | " + item[3] + '\n')
-            if config['Settings']['voice'] == "yes":
+            if voice == "yes":
                 eventexist = False
                 for started in eventlist:
                     if item[0] == started[0]:
@@ -249,6 +258,7 @@ root.wm_attributes("-topmost", 1)
 if config_var["GUI"]['borderless'] == "yes":
     root.overrideredirect(1)
 
-Thread(target=webapi, args=(zoneid, config_var)).start()
+Thread(target=outputloop, args=(zoneid, config_var['Settings']['serverlocation'], config_var['Settings']['unstable_events'],
+                            config_var['Settings']['voice'])).start()
 mainloop()
 root = False
