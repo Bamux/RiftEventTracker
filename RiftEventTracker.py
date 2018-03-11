@@ -98,17 +98,17 @@ def webapi(zone_id, config):
                     eventlist += [(item[0], item[1])]
                     if not first_run:
                         text = "Event in " + item[1] + " on " + item[2]
-                        Thread(target=saytext, args=(text, config)).start()
+                        Thread(target=saytext, args=(text,)).start()
         if first_run:
             first_run = False
         v.set(guioutput)
         time.sleep(15)
 
 
-def saytext(text, config):
+def saytext(text):
+    print(text)
     pythoncom.CoInitializeEx(pythoncom.COINIT_MULTITHREADED)
-    speak.Volume = int(config['Settings']['volume'])
-    speak.Speak(text)
+    speak.Speak("text")
 
 
 def close():
@@ -224,6 +224,7 @@ shards = {
 configfile = "config.ini"
 config_var = read_config(configfile)
 speak = win32com.client.Dispatch('Sapi.SpVoice')
+speak.Volume = int(config_var['Settings']['volume'])
 zoneid = zones_to_track(config_var)
 borderless = config_var["GUI"]['borderless']
 
@@ -243,5 +244,6 @@ root.attributes('-alpha', config_var['GUI']['alpha'])
 root.wm_attributes("-topmost", 1)
 if config_var["GUI"]['borderless'] == "yes":
     root.overrideredirect(1)
+
 Thread(target=webapi, args=(zoneid, config_var)).start()
 mainloop()
