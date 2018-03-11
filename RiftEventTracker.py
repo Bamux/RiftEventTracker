@@ -68,6 +68,8 @@ def webapi(zone_id, config):
         serverlocation = 'na'
         url = "http://web-api-us.riftgame.com:8080/chatservice/zoneevent/list?shardId="
     while True:
+        if not root:
+            break
         output = []
         for shardid in shards[serverlocation]:
             data = json.loads(requests.get(url + str(shardid)).text)['data']
@@ -103,13 +105,15 @@ def webapi(zone_id, config):
                         Thread(target=saytext, args=(text,)).start()
         if first_run:
             first_run = False
-        v.set(guioutput)
+        if root:
+            v.set(guioutput)
         time.sleep(15)
 
 
 def saytext(text):
-    pythoncom.CoInitializeEx(pythoncom.COINIT_MULTITHREADED)
-    speak.Speak(text)
+    if root:
+        pythoncom.CoInitializeEx(pythoncom.COINIT_MULTITHREADED)
+        speak.Speak(text)
 
 
 def close():
@@ -140,7 +144,6 @@ def close():
     with open(file, 'w') as file:
         config.write(file)
     root.destroy()
-    os._exit(1)
 
 
 def leftclick(event):
@@ -248,3 +251,4 @@ if config_var["GUI"]['borderless'] == "yes":
 
 Thread(target=webapi, args=(zoneid, config_var)).start()
 mainloop()
+root = False
