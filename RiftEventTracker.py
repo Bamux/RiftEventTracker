@@ -57,15 +57,6 @@ def zones_to_track(config):
     return zone_id
 
 
-def webapi(serverlocation):
-    if serverlocation == 'eu':
-        url = "http://web-api-eu.riftgame.com:8080/chatservice/zoneevent/list?shardId="
-    else:
-        serverlocation = 'na'
-        url = "http://web-api-us.riftgame.com:8080/chatservice/zoneevent/list?shardId="
-    return url
-
-
 def get_data(zone_id, serverlocation, url, unstable_events):
     data_output = []
     for shardid in shards[serverlocation]:
@@ -89,7 +80,11 @@ def get_data(zone_id, serverlocation, url, unstable_events):
 def outputloop(zone_id, serverlocation, unstable_events, voice):
     eventlist = []
     first_run = True
-    url = webapi(serverlocation)
+    if serverlocation == 'eu':
+        url = "http://web-api-eu.riftgame.com:8080/chatservice/zoneevent/list?shardId="
+    else:
+        url = "http://web-api-us.riftgame.com:8080/chatservice/zoneevent/list?shardId="
+        serverlocation = 'na'
     while True:
         data_output = get_data(zone_id, serverlocation, url, unstable_events)
         if not root:
@@ -252,6 +247,7 @@ test = root.bind("<Button-3>", rightclick)
 v = StringVar()
 Label(root, textvariable=v, anchor=NW, justify=LEFT, width=config_var['GUI']['width'],
       height=config_var['GUI']['height'], bg=config_var['GUI']['background'], fg=config_var['GUI']['foreground']).pack()
+v.set("loading data ...")
 root.protocol("WM_DELETE_WINDOW", close)
 root.attributes('-alpha', config_var['GUI']['alpha'])
 root.wm_attributes("-topmost", 1)
