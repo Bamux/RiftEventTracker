@@ -258,7 +258,7 @@ root.wm_attributes("-topmost", 1)
 if config_var["GUI"]['borderless'] == "yes":
     root.overrideredirect(1)
 
-Thread(target=outputloop, args=(zoneid, config_var['Settings']['serverlocation'], config_var['Settings']['unstable_events'],
-                            config_var['Settings']['voice'])).start()
+Thread(target=outputloop, args=(zoneid, config_var['Settings']['serverlocation'],
+                                config_var['Settings']['unstable_events'], config_var['Settings']['voice'])).start()
 mainloop()
 root = False
