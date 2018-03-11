@@ -6,21 +6,20 @@ import pythoncom
 from threading import Thread
 import os
 import math
-import codecs
 import configparser
-from collections import OrderedDict
 from tkinter import *
 
-def read_config(configfile):
-    if os.path.isfile(configfile):
+
+def read_config(file):
+    if os.path.isfile(file):
         config = configparser.ConfigParser()
         config.read(configfile)
-        return config
     else:
         config = write_new_config(configfile)
-        return config
+    return config
 
-def write_new_config(configfile):
+
+def write_new_config(file):
     config = configparser.ConfigParser()
     config['Settings'] = {}
     settings = config['Settings']
@@ -44,19 +43,21 @@ def write_new_config(configfile):
         config[expansion] = {}
         for zone in sorted_zones:
             config[expansion][str(zone[0])] = str(zone[1])
-    with open(configfile, 'w') as configfile:
-        config.write(configfile)
+    with open(file, 'w') as file:
+        config.write(file)
     return config
 
+
 def zones_to_track(config):
-    zoneid = {}
+    zone_id = {}
     for item in config:
         if item != "Settings" and item != "GUI":
             for key, value in config[item].items():
-                zoneid[key] = value
-    return zoneid
+                zone_id[key] = value
+    return zone_id
 
-def webapi(zoneid):
+
+def webapi(zone_id, config):
     eventlist = []
     first_run = True
     unstable_events = config['Settings']['unstable_events']
@@ -80,14 +81,14 @@ def webapi(zoneid):
                         if not condition:
                             for item in zoneid:
                                 if item == str(zone['zoneId']):
-                                    output += [[zone['started'], zoneid[item], shards[serverlocation][shardid],
+                                    output += [[zone['started'], zone_id[item], shards[serverlocation][shardid],
                                                 zone['name']]]
         output.sort(reverse=True)
         guioutput = ""
         for item in output:
-            min = str(int( math.floor((time.time() - item[0]) / 60) ))
-            min = '{:02}'.format(int(min))
-            guioutput += (" " +  min + " m  " + item[1] + " | " + item[2] + " | " + item[3] + '\n')
+            m = str(int(math.floor((time.time() - item[0]) / 60)))
+            m = '{:02}'.format(int(m))
+            guioutput += (" " + m + " m  " + item[1] + " | " + item[2] + " | " + item[3] + '\n')
             if config['Settings']['voice'] == "yes":
                 eventexist = False
                 for started in eventlist:
@@ -97,23 +98,26 @@ def webapi(zoneid):
                     eventlist += [(item[0], item[1])]
                     if not first_run:
                         text = "Event in " + item[1] + " on " + item[2]
-                        Thread(target=saytext, args=(text,)).start()
+                        Thread(target=saytext, args=(text, config)).start()
         if first_run:
             first_run = False
         v.set(guioutput)
         time.sleep(15)
 
-def saytext(say):
+
+def saytext(text, config):
     pythoncom.CoInitializeEx(pythoncom.COINIT_MULTITHREADED)
     speak.Volume = int(config['Settings']['volume'])
-    speak.Speak(say)
+    speak.Speak(text)
+
 
 def ask_quit():
     file = configfile
+    config = ""
     if os.path.isfile(configfile):
         config = configparser.ConfigParser()
         config.read(configfile)
-    zoneid = zones_to_track(config)
+    zones_id = zones_to_track(config)
     config['GUI']['x'] = (str(root.winfo_x()))
     config['GUI']['y'] = (str(root.winfo_y()))
     config['GUI']['width'] = (str(root.winfo_width()))
@@ -124,9 +128,11 @@ def ask_quit():
         sorted_zones = sorted(zones[expansion].items(), key=lambda x: x[1])
         config[expansion] = {}
         for zone in sorted_zones:
+            print(sorted_zones[0])
             zoneexist = False
-            for id in zoneid:
-                if str(zone[0]) == id:
+            for zone_id in zones_id:
+                print(zone[0])
+                if str(zone[0]) == zone_id:
                     zoneexist = True
             if zoneexist:
                 config[expansion][str(zone[0])] = str(zone[1])
@@ -136,6 +142,7 @@ def ask_quit():
         config.write(file)
     root.destroy()
     os._exit(1)
+
 
 def leftclick(event):
     global borderless
@@ -150,9 +157,11 @@ def leftclick(event):
 def middleclick(event):
     pass
 
+
 def rightclick(event):
     time.sleep(0.3)
     ask_quit()
+
 
 zones = {
     'Prophecy of Ahnket': {
@@ -219,27 +228,27 @@ shards = {
 }
 
 configfile = "config.ini"
-config = read_config(configfile)
+config_var = read_config(configfile)
 speak = win32com.client.Dispatch('Sapi.SpVoice')
-zoneid = zones_to_track(config)
-borderless =  config["GUI"]['borderless']
+zoneid = zones_to_track(config_var)
+borderless = config_var["GUI"]['borderless']
 
 # GUI
 root = Tk()
 COLOR = "black"
 root.title("Rift Event Tracker v0.4")
-root.geometry(config['GUI']['width'] + "x" + config['GUI']['height'])
-root.geometry("+" + config['GUI']['x'] + "+" + config['GUI']['y'])
+root.geometry(config_var['GUI']['width'] + "x" + config_var['GUI']['height'])
+root.geometry("+" + config_var['GUI']['x'] + "+" + config_var['GUI']['y'])
 root.bind("<Button-1>", leftclick)
 root.bind("<Button-2>", middleclick)
 test = root.bind("<Button-3>", rightclick)
 v = StringVar()
-Label(root, textvariable=v, anchor=NW, justify=LEFT,width=config['GUI']['width'],height=config['GUI']['height'],
-      bg=config['GUI']['background'], fg=config['GUI']['foreground']).pack()
+Label(root, textvariable=v, anchor=NW, justify=LEFT, width=config_var['GUI']['width'],
+      height=config_var['GUI']['height'], bg=config_var['GUI']['background'], fg=config_var['GUI']['foreground']).pack()
 root.protocol("WM_DELETE_WINDOW", ask_quit)
-root.attributes('-alpha',config['GUI']['alpha'])
+root.attributes('-alpha', config_var['GUI']['alpha'])
 root.wm_attributes("-topmost", 1)
-if config["GUI"]['borderless'] == "yes":
+if config_var["GUI"]['borderless'] == "yes":
     root.overrideredirect(1)
-Thread(target=webapi, args=(zoneid,)).start()
+Thread(target=webapi, args=(zoneid, config_var)).start()
 mainloop()
