@@ -244,7 +244,6 @@ borderless = config_var["GUI"]['borderless']
 
 # GUI
 root = Tk()
-COLOR = "black"
 root.title("Rift Event Tracker v0.4")
 root.geometry(config_var['GUI']['width'] + "x" + config_var['GUI']['height'])
 root.geometry("+" + config_var['GUI']['x'] + "+" + config_var['GUI']['y'])
