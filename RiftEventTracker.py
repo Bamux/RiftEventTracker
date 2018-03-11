@@ -106,7 +106,6 @@ def webapi(zone_id, config):
 
 
 def saytext(text):
-    print(text)
     pythoncom.CoInitializeEx(pythoncom.COINIT_MULTITHREADED)
     speak.Speak(text)
 
