@@ -111,7 +111,7 @@ def saytext(text, config):
     speak.Speak(text)
 
 
-def ask_quit():
+def close():
     file = configfile
     config = ""
     if os.path.isfile(configfile):
@@ -128,10 +128,8 @@ def ask_quit():
         sorted_zones = sorted(zones[expansion].items(), key=lambda x: x[1])
         config[expansion] = {}
         for zone in sorted_zones:
-            print(sorted_zones[0])
             zoneexist = False
             for zone_id in zones_id:
-                print(zone[0])
                 if str(zone[0]) == zone_id:
                     zoneexist = True
             if zoneexist:
@@ -154,13 +152,9 @@ def leftclick(event):
         borderless = "no"
 
 
-def middleclick(event):
-    pass
-
-
 def rightclick(event):
     time.sleep(0.3)
-    ask_quit()
+    close()
 
 
 zones = {
@@ -240,12 +234,11 @@ root.title("Rift Event Tracker v0.4")
 root.geometry(config_var['GUI']['width'] + "x" + config_var['GUI']['height'])
 root.geometry("+" + config_var['GUI']['x'] + "+" + config_var['GUI']['y'])
 root.bind("<Button-1>", leftclick)
-root.bind("<Button-2>", middleclick)
 test = root.bind("<Button-3>", rightclick)
 v = StringVar()
 Label(root, textvariable=v, anchor=NW, justify=LEFT, width=config_var['GUI']['width'],
       height=config_var['GUI']['height'], bg=config_var['GUI']['background'], fg=config_var['GUI']['foreground']).pack()
-root.protocol("WM_DELETE_WINDOW", ask_quit)
+root.protocol("WM_DELETE_WINDOW", close)
 root.attributes('-alpha', config_var['GUI']['alpha'])
 root.wm_attributes("-topmost", 1)
 if config_var["GUI"]['borderless'] == "yes":
