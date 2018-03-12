@@ -119,7 +119,7 @@ def outputloop(zone_id, serverlocation, unstable_events, voice):
                 v.set(guioutput)
             time.sleep(15)
         else:
-            v.set("error")
+            v.set(" No event running")
 
 
 def saytext(text):
