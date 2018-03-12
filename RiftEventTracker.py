@@ -230,9 +230,9 @@ shards = {
   'eu': {
     2702: 'Bloodiron',
     2714: 'Brisesol',
-    27110: 'Brutwacht',
+    2711: 'Brutwacht',
     2721: 'Gelidra',
-    27410: 'Typhiria',
+    2741: 'Typhiria',
     2722: 'Zaviel',
   }
 }
