@@ -156,6 +156,7 @@ def close():
     with open(file, 'w') as file:
         config.write(file)
     root.destroy()
+    os._exit(1)
 
 
 def leftclick(event):
@@ -264,4 +265,3 @@ if config_var["GUI"]['borderless'] == "yes":
 Thread(target=outputloop, args=(zoneid, config_var['Settings']['serverlocation'],
                                 config_var['Settings']['unstable_events'], config_var['Settings']['voice'])).start()
 mainloop()
-root = False
