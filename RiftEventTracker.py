@@ -73,6 +73,8 @@ def get_data(zone_id, serverlocation, url, unstable_events):
                             if item == str(zone['zoneId']):
                                 data_output += [[zone['started'], zone_id[item], shards[serverlocation][shardid],
                                                  zone['name']]]
+        else:
+            data_output += [[0, shards[serverlocation][shardid]]]
     data_output.sort(reverse=True)
     return data_output
 
@@ -86,33 +88,38 @@ def outputloop(zone_id, serverlocation, unstable_events, voice):
         url = "http://web-api-us.riftgame.com:8080/chatservice/zoneevent/list?shardId="
         serverlocation = 'na'
     while True:
-        data_output = get_data(zone_id, serverlocation, url, unstable_events)
         if not root:
             break
         data_output = get_data(zone_id, serverlocation, url, unstable_events)
-        guioutput = ""
-        for item in data_output:
-            m = int(math.floor((time.time() - item[0]) / 60))
-            if m < 0:
-                m = 0
-            if m < 100:
-                m = '{:02}'.format(m)
-                guioutput += (" " + m + " m  " + item[1] + " | " + item[2] + " | " + item[3] + '\n')
-            if voice == "yes":
-                eventexist = False
-                for started in eventlist:
-                    if item[0] == started[0]:
-                        eventexist = True
-                if not eventexist:
-                    eventlist += [(item[0], item[1])]
-                    if not first_run:
-                        text = "Event in " + item[1] + " on " + item[2]
-                        Thread(target=saytext, args=(text,)).start()
-        if first_run:
-            first_run = False
-        if root:
-            v.set(guioutput)
-        time.sleep(15)
+        if data_output:
+            guioutput = ""
+            for item in data_output:
+                if item[0] == 0:
+                    guioutput += " " + item[1] + " not available\n"
+                else:
+                    m = int(math.floor((time.time() - item[0]) / 60))
+                    if m < 0:
+                        m = 0
+                    if m < 100:
+                        m = '{:02}'.format(m)
+                        guioutput += (" " + m + " m  " + item[1] + " | " + item[2] + " | " + item[3] + '\n')
+                    if voice == "yes":
+                        eventexist = False
+                        for started in eventlist:
+                            if item[0] == started[0]:
+                                eventexist = True
+                        if not eventexist:
+                            eventlist += [(item[0], item[1])]
+                            if not first_run:
+                                text = "Event in " + item[1] + " on " + item[2]
+                                Thread(target=saytext, args=(text,)).start()
+            if first_run:
+                first_run = False
+            if root:
+                v.set(guioutput)
+            time.sleep(15)
+        else:
+            v.set("error")
 
 
 def saytext(text):
@@ -223,9 +230,9 @@ shards = {
   'eu': {
     2702: 'Bloodiron',
     2714: 'Brisesol',
-    2711: 'Brutwacht',
+    27110: 'Brutwacht',
     2721: 'Gelidra',
-    2741: 'Typhiria',
+    27410: 'Typhiria',
     2722: 'Zaviel',
   }
 }
