@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import requests
 import json
 import time
@@ -8,6 +10,7 @@ import os
 import math
 import configparser
 from tkinter import *
+import codecs
 
 
 def read_config(file):
@@ -24,6 +27,7 @@ def write_new_config(file):
     config['Settings'] = {}
     settings = config['Settings']
     settings['serverlocation'] = 'eu'
+    settings['language'] = 'eng'
     settings['voice'] = 'yes'
     settings['volume'] = '100'
     settings['unstable_events'] = 'no'
@@ -50,10 +54,20 @@ def write_new_config(file):
 
 def zones_to_track(config):
     zone_id = {}
+
     for item in config:
         if item != "Settings" and item != "GUI":
             for key, value in config[item].items():
-                zone_id[key] = value
+                if ", " in value:
+                    value = value.split(", ")
+                    if config['Settings']['language'] == "ger":
+                        zone_id[key] = value[1]
+                    elif config['Settings']['language'] == "fr":
+                        zone_id[key] = value[2]
+                    else:
+                        zone_id[key] = value[0]
+                else:
+                    zone_id[key] = value
     return zone_id
 
 
@@ -65,10 +79,15 @@ def get_data(zone_id, serverlocation, url, unstable_events):
             for zone in data:
                 if 'started' in zone:
                     condition = False
-                    if unstable_events == "no":
+                    if unstable_events == "no"  or unstable_events == "only":
                         if 'Unstable' in zone['name'] or 'Instabil' in zone['name'] or 'instable' in zone['name']:
-                            condition = True
-                    if not condition:
+                            if unstable_events == "no":
+                                condition = False
+                            else:
+                                condition = True
+                    else:
+                        condition = True
+                    if condition:
                         for item in zoneid:
                             if item == str(zone['zoneId']):
                                 data_output += [[zone['started'], zone_id[item], shards[serverlocation][shardid],
@@ -79,22 +98,21 @@ def get_data(zone_id, serverlocation, url, unstable_events):
     return data_output
 
 
-def outputloop(zone_id, serverlocation, unstable_events, voice):
+def outputloop(zone_id, serverlocation, url, unstable_events, voice):
     eventlist = []
     first_run = True
-    if serverlocation == 'eu':
-        url = "http://web-api-eu.riftgame.com:8080/chatservice/zoneevent/list?shardId="
-    else:
-        url = "http://web-api-us.riftgame.com:8080/chatservice/zoneevent/list?shardId="
-        serverlocation = 'na'
+    if serverlocation == "prime" or serverlocation == "log":
+        logfilecheck(serverlocation)
     while True:
         if not root:
             break
         data_output = get_data(zone_id, serverlocation, url, unstable_events)
+        unavailable_servers = 0
         if data_output:
             guioutput = ""
             for item in data_output:
                 if item[0] == 0:
+                    unavailable_servers += 1
                     guioutput += " " + item[1] + " not available\n"
                 else:
                     m = int(math.floor((time.time() - item[0]) / 60))
@@ -111,7 +129,14 @@ def outputloop(zone_id, serverlocation, unstable_events, voice):
                         if not eventexist:
                             eventlist += [(item[0], item[1])]
                             if not first_run:
-                                text = "Event in " + item[1] + " on " + item[2]
+                                beginning = "Event in"
+                                end = "on"
+                                if config_var['Settings']['language'] == 'ger':
+                                    end = "auf"
+                                elif config_var['Settings']['language'] == 'fr':
+                                    beginning = "Événement en"
+                                    end = "au"
+                                text = beginning + " " + item[1] + " " + end + " " + item[2]
                                 Thread(target=saytext, args=(text,)).start()
             if first_run:
                 first_run = False
@@ -119,13 +144,18 @@ def outputloop(zone_id, serverlocation, unstable_events, voice):
                 v.set(guioutput)
         else:
             v.set(" No event running")
+        if unavailable_servers == len(shards[serverlocation]):
+            logfile_analysis(serverlocation, unstable_events)
         time.sleep(15)
 
 
 def saytext(text):
-    if root:
-        pythoncom.CoInitializeEx(pythoncom.COINIT_MULTITHREADED)
-        speak.Speak(text)
+    if root and config_var['Settings']['voice'] == "yes":
+        try:
+            pythoncom.CoInitializeEx(pythoncom.COINIT_MULTITHREADED)
+            speak.Speak(text)
+        except:
+            pass
 
 
 def close():
@@ -174,52 +204,156 @@ def rightclick(event):
     close()
 
 
+def logfilecheck():
+    while True:
+        log_exists = False
+        log_file = ""
+        if os.path.isfile(os.path.expanduser('~\Documents\RIFT\Log.txt')):
+            log_file = os.path.expanduser('~\Documents\RIFT\Log.txt')
+            log_exists = True
+        elif os.path.isfile('C:\Program Files (x86)\RIFT Game\Log.txt'):
+            log_file = 'C:\Program Files (x86)\RIFT Game\Log.txt'
+            log_exists = True
+        elif os.path.isfile('C:\Programs\RIFT~1\Log.txt'):
+            log_file = 'C:\Programs\RIFT~1\Log.txt'
+            log_exists = True
+        if log_exists:
+            logtext = codecs.open(log_file, 'r', "utf-8")
+            return logtext
+        time.sleep(10)
+
+
+def lofile_output(serverlocation, data_output):
+    guioutput = ""
+    i = 0
+    for item in data_output:
+        if i < 15:
+            m = int(math.floor((time.time() - item[0]) / 60))
+            if m < 0:
+                m = 0
+            if m < 100:
+                m = '{:02}'.format(m)
+            if serverlocation == "prime":
+                guioutput += (" " + m + " m  " + item[1] + " | " + item[3] + "\n")
+            else:
+                guioutput += (" " + m + " m  " + item[1] + " | " + item[2] + " | " + item[3] + '\n')
+        else:
+            break
+    v.set(guioutput)
+
+
+def logfile_analysis(serverlocation, unstable_events):  # analyzes each new line in the Log.txt
+    guioutput = " WebApi not aviable!\n Use /log in Rift as an alternative data source for running events."
+    v.set(guioutput)
+    logtext = logfilecheck()
+    logtext.seek(0, 2)  # jumps to the end of the Log.txt
+    data_output = []
+    zone = ""
+    shardname = ""
+    running_log = False
+    previous_event = []
+    while True:
+        line = ""
+        log = ""
+        line = logtext.readline()  # read new line
+        if line:
+            if not running_log:
+                running_log = True
+                v.set(" Logfile found. Search for events started.")
+            if "[" in line and "]" in line and "!" in line:
+                for shardname in shards[serverlocation].values():
+                    if shardname in line:
+                        for zone in zoneid.values():
+                            if zone in line:
+                                condition = False
+                                if unstable_events == "no" or unstable_events == "only":
+                                    if 'Unstable' in zone['name'] or 'Instabil' in zone['name'] or 'instable' in zone[
+                                        'name']:
+                                        if unstable_events == "no":
+                                            condition = False
+                                        else:
+                                            condition = True
+                                else:
+                                    condition = True
+                                if condition:
+                                    event = line.split("[")[2]
+                                    event = event.split("]")[0]
+                                    timestamp = int(math.floor(time.time()))
+                                    event = [timestamp, zone, shardname, event]
+                                    if previous_event and event[3] == previous_event[3] and timestamp - previous_event[0] < 10:
+                                        condition = False
+                                    if condition:
+                                        previous_event = event
+                                        data_output += [event]
+                                        data_output.sort(reverse=True)
+                                        event = ()
+                                        lofile_output(serverlocation, data_output)
+                                        beginning = "Event in"
+                                        end = "on"
+                                        if config_var['Settings']['language'] == 'ger':
+                                            end = "auf"
+                                        elif config_var['Settings']['language'] == 'fr':
+                                            beginning = "Événement en"
+                                            end = "au"
+                                        if serverlocation == "prime":
+                                            text = beginning + " " + zone
+                                        else:
+                                            text = beginning + " " + zone + " " + end + " " + shardname
+                                        Thread(target=saytext, args=(text,)).start()
+                                break
+                        break
+        else:
+            if data_output:
+                lofile_output(serverlocation, data_output)
+            time.sleep(1)  # waiting for a new input
+
+
 zones = {
     'Prophecy of Ahnket': {
-        2007770238: 'Ashenfell',
-        788055204: 'Gedlo Badlands',
-        2066418614: 'Scatherran Forest',
-        511816852: 'Vostigar Peaks',
-        1208799201: 'Xarth Mire',
+        2007770238: 'Ashenfell, Aschenfall, Chutecendres',
+        788055204: 'Gedlo Badlands, Gedlonianisches Ödland, Maleterres de Gedlo',
+        2066418614: 'Scatherran Forest, Skatherran-Wald, Forêt des Bourreaux',
+        511816852: 'Vostigar Peaks, Vostigar-Gipfel, Pics de Vostigar',
+        1208799201: 'Xarth Mire, Xarth-Sumpf, Bourbier de Xarth',
     },
     'Nightmare Tide': {
-        302: 'Draumheim',
-        301: 'Goboro Reef',
-        28: 'Planetouched Wilds',
-        303: 'Tarken Glacier',
-        426135797: "Tyrant's Throne",
+        302: 'Draumheim, Draumheim, Draumheim',
+        301: 'Goboro Reef, Goboro-Riff, Récif de Goboro',
+        28: 'Planetouched Wilds, Ebenenberührte Wildnis, Étendues marquées par les Plans',
+        303: 'Tarken Glacier, Tarken-Gletscher, Glacier de Tarken',
+        426135797: "Tyrant's Throne, Tyrannenthron, Trône du Tyran",
     },
     'Storm Legion': {
-        1446819710: 'Ardent Domain',
+        1446819710: 'Ardent Domain, Eiferer-Reich, Contrée Ardente',
         790513416: 'Ashora',
-        1213399942: 'Eastern Holdings',
-        1770829751: 'Cape Jule',
-        1967477725: 'City Core',
-        479431687: 'Kingdom of Pelladane',
-        1300766935: 'Kingsward',
+        1213399942: "Eastern Holdings, Östliche Besitztümer, Fiefs de l'Orient",
+        1770829751: 'Cape Jule, Kap Jul, Cap Yule',
+        1967477725: 'City Core, Stadtkern, Cœur de la Cité',
+        479431687: 'Kingdom of Pelladane, Königreich Pelladane, Royaume de Pelladane',
+        1300766935: 'Kingsward, Königszirkel, Protectorat du Roi',
         956914599: 'Morban',
-        282584906: 'The Dendrome',
-        1494372221: 'Seratos',
-        798793247: 'Steppes of Infinity',
+        282584906: 'The Dendrome, Das Dendrom, The Dendrome',
+        1494372221: 'Seratos, Seratos, Serratos',
+        798793247: "Steppes of Infinity, Steppen der Unendlichkeit, Steppes de l'Infini",
     },
     'Classic': {
-        336995470: 'Droughtlands',
-        19: 'Freemarch',
-        22: 'Iron Pine Peak',
-        27: 'Gloamwood',
-        1992854106: 'Ember Isle',
-        24: 'Moonshade Highlands',
-        26580443: 'Scarlet Gorge',
-        20: 'Scarwood Reach',
-        6: 'Shimmersand',
-        12: 'Silverwood',
-        26: 'Stillmoor',
-        1481781477: 'Stonefield',
+        336995470: 'Droughtlands, Ödlande, Plaines Arides',
+        19: 'Freemarch, Freimark, Libremarche',
+        22: 'Iron Pine Peak, Eisenkieferngipfel, Pic du Pin de fer',
+        27: 'Gloamwood, Dämmerwald, Bois du Crépuscule',
+        1992854106: 'Ember Isle, Glutinsel, Île de Braise',
+        24: "Moonshade Highlands, Mondschattenberge, Hautes-Terres d'Ombrelune",
+        26580443: 'Scarlet Gorge, Scharlachrote Schlucht, Gorges Écarlates',
+        20: 'Scarwood Reach, Wundwaldregion, Étendue de Bois Meurtris',
+        6: 'Shimmersand, Schimmersand, Sable-chatoyant',
+        12: "Silverwood, Silberwald, Bois d'Argent'",
+        26: 'Stillmoor, Stillmoor, Mornelande',
+        1481781477: 'Stonefield, Steinfeld, Champ de Pierre',
     },
 }
 
 shards = {
-  'na': {
+  'us': {
     1704: 'Deepwood',
     1707: 'Faeblight',
     1702: 'Greybriar',
@@ -227,7 +361,7 @@ shards = {
     1708: 'Laethys',
     1701: 'Seastone',
     1706: 'Wolfsbane',
-  },
+    },
   'eu': {
     2702: 'Bloodiron',
     2714: 'Brisesol',
@@ -235,19 +369,29 @@ shards = {
     2721: 'Gelidra',
     2741: 'Typhiria',
     2722: 'Zaviel',
-  }
+    },
+    'prime': {
+        0: 'Virgil',
+    },
 }
 
 configfile = "config.ini"
 config_var = read_config(configfile)
-speak = win32com.client.Dispatch('Sapi.SpVoice')
-speak.Volume = int(config_var['Settings']['volume'])
+if config_var['Settings']['serverlocation'] != 'eu' and config_var['Settings']['serverlocation'] != 'prime':
+    config_var['Settings']['serverlocation'] = 'us'
+try:
+    speak = win32com.client.Dispatch('Sapi.SpVoice')
+    speak.Volume = int(config_var['Settings']['volume'])
+except:
+    pass
+webapi = "http://web-api-" + config_var['Settings']['serverlocation'] \
+         + ".riftgame.com:8080/chatservice/zoneevent/list?shardId="
 zoneid = zones_to_track(config_var)
 borderless = config_var["GUI"]['borderless']
 
 # GUI
 root = Tk()
-root.title("Rift Event Tracker v0.4")
+root.title("Rift Event Tracker 0.5")
 root.geometry(config_var['GUI']['width'] + "x" + config_var['GUI']['height'])
 root.geometry("+" + config_var['GUI']['x'] + "+" + config_var['GUI']['y'])
 root.bind("<Button-1>", leftclick)
@@ -262,6 +406,6 @@ root.wm_attributes("-topmost", 1)
 if config_var["GUI"]['borderless'] == "yes":
     root.overrideredirect(1)
 
-Thread(target=outputloop, args=(zoneid, config_var['Settings']['serverlocation'],
+Thread(target=outputloop, args=(zoneid, config_var['Settings']['serverlocation'], webapi,
                                 config_var['Settings']['unstable_events'], config_var['Settings']['voice'])).start()
 mainloop()

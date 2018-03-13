@@ -1,4 +1,4 @@
-## Rift Event Tracker 0.4.7
+## Rift Event Tracker 0.5.0
 ![Overlay](https://cdn.discordapp.com/attachments/374932500910309379/422081814950313984/unknown.png)
 
 Download latest Version: https://github.com/Bamux/RiftEventTracker/archive/master.zip
@@ -16,6 +16,7 @@ Features:
 ![Rift Settings](https://cdn.discordapp.com/attachments/374932500910309379/422085099841126400/unknown.png)
 
 ## Configuration:
+- after the first start a configuration file is created in the same folder
 - the configuration of the program is done via the config. ini here you can deactivate/activate the zones to be tracked and change the interface layout
 - to deactivate a zone, simply place ; at the beginning of the line or delete the line
 
