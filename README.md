@@ -27,7 +27,8 @@ Features:
   volume = 0-100<br>
   unstable_events = yes, no or only<br>
   
-  ## Change your Text to Speech voice
-  Open the Windows Text to Speech Engine. Default folder is C:\Windows\SysWOW64\Speech\SpeechUX\sapi.cpl 
-  ![Change Text to Speech Voice](https://raw.githubusercontent.com/Bamux/Rift-Raid-Alert/images/Text%20to%20Speach.png)<br>
-Under http://www.mwsreader.com/en/voices/ you can download other voices (different languages).
+ ## Change your Text to Speech voice
+- Open the Windows Text to Speech Engine. Default folder is C:\Windows\SysWOW64\Speech\SpeechUX\sapi.cpl
+- Choose a voice that you like 
+![Change Text to Speech Voice](https://raw.githubusercontent.com/Bamux/Rift-Raid-Alert/images/Text%20to%20Speach.png)<br>
+- Under http://www.mwsreader.com/en/voices/ you can download other voices (different languages).
