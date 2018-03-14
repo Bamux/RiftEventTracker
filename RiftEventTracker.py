@@ -78,15 +78,15 @@ def get_data(zone_id, serverlocation, url, unstable_events):
         if data:
             for zone in data:
                 if 'started' in zone:
-                    condition = False
+                    condition = True
                     if unstable_events == "no"  or unstable_events == "only":
+                        if unstable_events == "only":
+                            condition = False
                         if 'Unstable' in zone['name'] or 'Instabil' in zone['name'] or 'instable' in zone['name']:
-                            if unstable_events == "no":
-                                condition = False
-                            else:
+                            if unstable_events == "only":
                                 condition = True
-                    else:
-                        condition = True
+                            else:
+                                condition = False
                     if condition:
                         for item in zoneid:
                             if item == str(zone['zoneId']):
@@ -265,16 +265,15 @@ def logfile_analysis(serverlocation, unstable_events):  # analyzes each new line
                     if shardname in line:
                         for zone in zoneid.values():
                             if zone in line:
-                                condition = False
+                                condition = True
                                 if unstable_events == "no" or unstable_events == "only":
-                                    if 'Unstable' in zone['name'] or 'Instabil' in zone['name'] or 'instable' in zone[
-                                        'name']:
-                                        if unstable_events == "no":
-                                            condition = False
-                                        else:
+                                    if unstable_events == "only":
+                                        condition = False
+                                    if 'Unstable' in line or 'Instabil' in line or 'instable' in line:
+                                        if unstable_events == "only":
                                             condition = True
-                                else:
-                                    condition = True
+                                        else:
+                                            condition = False
                                 if condition:
                                     event = line.split("[")[2]
                                     event = event.split("]")[0]
