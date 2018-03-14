@@ -102,7 +102,7 @@ def outputloop(zone_id, serverlocation, url, unstable_events, voice):
     eventlist = []
     first_run = True
     if serverlocation == "prime" or serverlocation == "log":
-        logfilecheck(serverlocation)
+        logfile_analysis(serverlocation, unstable_events)
     while True:
         if not root:
             break
