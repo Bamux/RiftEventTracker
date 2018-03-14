@@ -22,6 +22,7 @@ Features:
 
   [Settings]<br>
   serverlocation = eu or na<br>
+  language = eng , ger or fr<br>
   voice = yes or no<br>
   volume = 0-100<br>
-  unstable_events = yes or no<br>
+  unstable_events = yes, no or only<br>
