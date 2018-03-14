@@ -41,6 +41,7 @@ def write_new_config(file):
     gui['foreground'] = 'white'
     gui['alpha'] = '0.7'
     gui['borderless'] = 'no'
+    gui['always_on_top'] = 'yes'
     expansions = sorted(zones.keys())
     for expansion in expansions:
         sorted_zones = sorted(zones[expansion].items(), key=lambda x: x[1])
@@ -58,15 +59,15 @@ def zones_to_track(config):
         if item != "Settings" and item != "GUI":
             for key, value in config[item].items():
                 if ", " in value:
-                    value = value.split(", ")
+                    value = value.split(",")
                     if config['Settings']['language'] == "ger":
-                        zone_id[key] = value[1]
+                        zone_id[key] = value[1].strip()
                     elif config['Settings']['language'] == "fr":
-                        zone_id[key] = value[2]
+                        zone_id[key] = value[2].strip()
                     else:
-                        zone_id[key] = value[0]
+                        zone_id[key] = value[0].strip()
                 else:
-                    zone_id[key] = value
+                    zone_id[key] = value.strip()
     return zone_id
 
 
@@ -400,7 +401,8 @@ Label(root, textvariable=v, anchor=NW, justify=LEFT, width=config_var['GUI']['wi
 v.set("loading data ...")
 root.protocol("WM_DELETE_WINDOW", close)
 root.attributes('-alpha', config_var['GUI']['alpha'])
-root.wm_attributes("-topmost", 1)
+if config_var['GUI']['always_on_top'] == "yes":
+    root.wm_attributes("-topmost", 1)
 if config_var["GUI"]['borderless'] == "yes":
     root.overrideredirect(1)
 
