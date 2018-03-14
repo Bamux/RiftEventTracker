@@ -54,7 +54,6 @@ def write_new_config(file):
 
 def zones_to_track(config):
     zone_id = {}
-
     for item in config:
         if item != "Settings" and item != "GUI":
             for key, value in config[item].items():
@@ -352,7 +351,7 @@ zones = {
 }
 
 shards = {
-  'us': {
+    'us': {
     1704: 'Deepwood',
     1707: 'Faeblight',
     1702: 'Greybriar',
@@ -361,7 +360,7 @@ shards = {
     1701: 'Seastone',
     1706: 'Wolfsbane',
     },
-  'eu': {
+    'eu': {
     2702: 'Bloodiron',
     2714: 'Brisesol',
     2711: 'Brutwacht',
