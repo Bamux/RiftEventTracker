@@ -149,6 +149,7 @@ def outputloop(zone_id, serverlocation, url, unstable_events, voice):
                 v.set(guioutput)
         else:
             v.set(" No event running")
+            first_run = False
         if unavailable_servers == len(shards[serverlocation]):
             logfile_analysis(serverlocation, unstable_events)
         time.sleep(15)
