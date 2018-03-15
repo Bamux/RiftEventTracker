@@ -21,9 +21,7 @@ def read_config(file):
             config['Settings']['volume'] = "100"
         elif int(config['Settings']['volume']) < 0:
             config['Settings']['volume'] = "0"
-        if "always_on_top" not in config['GUI']:
-            config['GUI']['always_on_top'] = "yes"
-            print(config)
+        config['GUI']['always_on_top'] = config['GUI'].get("always_on_top", "yes")
     else:
         config = write_new_config(configfile)
     return config
