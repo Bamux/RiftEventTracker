@@ -21,7 +21,7 @@ Features:
 - to deactivate a zone, simply place ; at the beginning of the line or delete the line
 
   [Settings]<br>
-  serverlocation = eu or na<br>
+  serverlocation = eu, us or prime<br>
   language = eng , ger or fr<br>
   voice = yes or no<br>
   volume = 0-100<br>
