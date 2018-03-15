@@ -17,6 +17,13 @@ def read_config(file):
     if os.path.isfile(file):
         config = configparser.ConfigParser()
         config.read(configfile)
+        if int(config['Settings']['volume']) > 100:
+            config['Settings']['volume'] = "100"
+        elif int(config['Settings']['volume']) < 0:
+            config['Settings']['volume'] = "0"
+        if "always_on_top" not in config['GUI']:
+            config['GUI']['always_on_top'] = "yes"
+            print(config)
     else:
         config = write_new_config(configfile)
     return config
@@ -170,6 +177,7 @@ def close():
     config['GUI']['width'] = (str(root.winfo_width()))
     config['GUI']['height'] = (str(root.winfo_height()))
     config["GUI"]['borderless'] = borderless
+    config['GUI']['always_on_top'] = config_var['GUI']['always_on_top']
     expansions = sorted(zones.keys())
     for expansion in expansions:
         sorted_zones = sorted(zones[expansion].items(), key=lambda x: x[1])
