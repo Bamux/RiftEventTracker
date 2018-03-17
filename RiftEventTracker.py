@@ -270,6 +270,7 @@ def logfile_analysis(serverlocation, unstable_events):  # analyzes each new line
             if "[" in line and "]" in line and "!" in line:
                 for shardname in shards[serverlocation].values():
                     if shardname in line:
+                        print(shardname)
                         for zone in zoneid.values():
                             if zone in line:
                                 condition = True
@@ -377,7 +378,7 @@ shards = {
     2722: 'Zaviel',
     },
     'prime': {
-        0: 'Virgil',
+        0: 'Vigil',
     },
 }
 
