@@ -27,6 +27,17 @@ def read_config(file):
     return config
 
 
+def eventnames(serverlocation):
+    event = []
+    if os.path.isfile("eventnames.txt"):
+        event_names = codecs.open("eventnames.txt", 'r', "utf-8")
+        for item in event_names:
+            item = item.strip()
+            item = item.split(", ")
+            event += [item]
+    return event
+
+
 def write_new_config(file):
     config = configparser.ConfigParser()
     config['Settings'] = {}
@@ -103,7 +114,7 @@ def get_data(zone_id, serverlocation, url, unstable_events):
     return data_output
 
 
-def outputloop(zone_id, serverlocation, url, unstable_events, voice):
+def outputloop(zone_id, serverlocation, url, unstable_events, voice, language, zonenames):
     eventlist = []
     first_run = True
     if serverlocation == "prime" or serverlocation == "log":
@@ -125,6 +136,31 @@ def outputloop(zone_id, serverlocation, url, unstable_events, voice):
                         m = 0
                     if m < 100:
                         m = '{:02}'.format(m)
+                        if language == "eng":
+                                if item[2] == "Brutwacht":
+                                    for name in zonenames:
+                                        if name[0] == item[3]:
+                                            item[3] = name[1]
+                                elif item[2] == "Brisesol":
+                                    for name in zonenames:
+                                        if name[2] == item[3]:
+                                            item[3] = name[1]
+                        elif language == "ger":
+                            for name in zonenames:
+                                if item[2] == "Brisesol":
+                                    if name[2] == item[3]:
+                                        item[3] = name[0]
+                                else:
+                                    if name[1] == item[3]:
+                                        item[3] = name[0]
+                        elif language == "fr":
+                            for name in zonenames:
+                                if item[2] == "Brutwacht":
+                                    if name[0] == item[3]:
+                                        item[3] = name[2]
+                                else:
+                                    if name[1] == item[3]:
+                                        item[3] = name[2]
                         guioutput += (" " + m + " m  " + item[1] + " | " + item[2] + " | " + item[3] + '\n')
                     if voice == "yes":
                         eventexist = False
@@ -386,6 +422,7 @@ configfile = "config.ini"
 config_var = read_config(configfile)
 if config_var['Settings']['serverlocation'] != 'eu' and config_var['Settings']['serverlocation'] != 'prime':
     config_var['Settings']['serverlocation'] = 'us'
+zone_names = eventnames(config_var['Settings']['serverlocation'])
 try:
     speak = win32com.client.Dispatch('Sapi.SpVoice')
     speak.Volume = int(config_var['Settings']['volume'])
@@ -415,5 +452,6 @@ if config_var["GUI"]['borderless'] == "yes":
     root.overrideredirect(1)
 
 Thread(target=outputloop, args=(zoneid, config_var['Settings']['serverlocation'], webapi,
-                                config_var['Settings']['unstable_events'], config_var['Settings']['voice'])).start()
+                                config_var['Settings']['unstable_events'], config_var['Settings']['voice'],
+                                config_var['Settings']['language'], zone_names)).start()
 mainloop()
