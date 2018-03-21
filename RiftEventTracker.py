@@ -435,7 +435,7 @@ borderless = config_var["GUI"]['borderless']
 
 # GUI
 root = Tk()
-root.title("Rift Event Tracker 0.5")
+root.title("Rift Event Tracker 0.6")
 root.geometry(config_var['GUI']['width'] + "x" + config_var['GUI']['height'])
 root.geometry("+" + config_var['GUI']['x'] + "+" + config_var['GUI']['y'])
 root.bind("<Button-1>", leftclick)
