@@ -368,7 +368,7 @@ def upgrade():
     if version < latest_version:
         Thread(target=start_upgrade, args=(path,)).start()
         time.sleep(5)
-    os._exit(1)
+        os._exit(1)
 
 version = "0.7"
 upgrade()
