@@ -38,6 +38,15 @@ time.sleep(1)
 copyfile('update/RiftEventTracker-master/RiftEventTracker.exe', 'RiftEventTracker.exe')
 copyfile('update/RiftEventTracker-master/update.exe', '_update.exe')
 copyfile('update/RiftEventTracker-master/README.md', 'README.md')
+
+
+files = os.listdir("update/RiftEventTracker-master")
+for f in files:
+    if f != ".gitignore":
+        print(f)
+        if not os.path.exists(f):
+            shutil.move("update/RiftEventTracker-master/" + f, ".")
+
 shutil.rmtree("update")
 print("Program successfully updated!")
 time.sleep(10)
