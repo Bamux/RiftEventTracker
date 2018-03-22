@@ -35,11 +35,8 @@ for file in zf.infolist():
 zf.close()
 print("Files will be copied please wait a moment.")
 time.sleep(1)
-copyfile('update/RiftEventTracker-master/RiftEventTracker.exe', 'RiftEventTracker.exe')
+
 copyfile('update/RiftEventTracker-master/update.exe', '_update.exe')
-copyfile('update/RiftEventTracker-master/README.md', 'README.md')
-
-
 files = os.listdir("update/RiftEventTracker-master")
 for f in files:
     if f != ".gitignore":
