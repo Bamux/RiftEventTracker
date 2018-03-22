@@ -352,25 +352,29 @@ def logfile_analysis(serverlocation, unstable_events):  # analyzes each new line
             time.sleep(1)  # waiting for a new input
 
 def start_upgrade(path):
-    os.system(path)
+    # os.system(path)
+    subprocess.Popen(path, shell=True)
 
 
 def upgrade():
-    if os.path.isfile("_update.exe"):
-        if os.path.isfile("update.exe"):
-            os.remove("update.exe")
-        os.rename('_update.exe', 'update.exe')
-    url = "https://raw.githubusercontent.com/Bamux/RiftEventTracker/master/README.md"
-    path = "update.exe"
-    latest_version = requests.get(url).text  # => str, not bytes
-    latest_version = latest_version.split("## Rift Event Tracker ")[1]
-    latest_version = latest_version.split("![Overlay]")[0]
-    latest_version = latest_version.strip()
-    print(latest_version)
-    if version < latest_version:
-        Thread(target=start_upgrade, args=(path,)).start()
-        time.sleep(5)
-        os._exit(1)
+    try:
+        if os.path.isfile("_update.exe"):
+            if os.path.isfile("update.exe"):
+                os.remove("update.exe")
+            os.rename('_update.exe', 'update.exe')
+        url = "https://raw.githubusercontent.com/Bamux/RiftEventTracker/master/README.md"
+        path = "update.exe"
+        latest_version = requests.get(url).text  # => str, not bytes
+        latest_version = latest_version.split("## Rift Event Tracker ")[1]
+        latest_version = latest_version.split("![Overlay]")[0]
+        latest_version = latest_version.strip()
+        if version < latest_version:
+            Thread(target=start_upgrade, args=(path,)).start()
+            print("Starting update process")
+            time.sleep(5)
+            os._exit(1)
+    except:
+        pass
 
 version = "0.7.1"
 upgrade()
