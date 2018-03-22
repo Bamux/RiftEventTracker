@@ -372,7 +372,7 @@ def upgrade():
         time.sleep(5)
         os._exit(1)
 
-version = "0.7"
+version = "0.7.1"
 upgrade()
 
 zones = {
