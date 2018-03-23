@@ -53,3 +53,4 @@ for f in files:
 
 shutil.rmtree("update")
 print("Program successfully updated!")
+os.system("RiftEventTracker.exe")
