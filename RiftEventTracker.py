@@ -4,15 +4,18 @@ import requests
 import json
 import time
 import win32com.client
+import win32ui
 import pythoncom
 from threading import Thread
 import os
 import math
 import configparser
 from tkinter import *
+from tkinter import messagebox
 import codecs
 import subprocess
 
+version = "0.7.3"
 
 def read_config(file):
     if os.path.isfile(file):
@@ -116,6 +119,8 @@ def get_data(zone_id, serverlocation, url, unstable_events):
 
 
 def outputloop(zone_id, serverlocation, url, unstable_events, voice, language, zonenames):
+    update()
+    v.set("loading data ...")
     eventlist = []
     first_run = True
     if serverlocation == "prime" or serverlocation == "log":
@@ -351,12 +356,13 @@ def logfile_analysis(serverlocation, unstable_events):  # analyzes each new line
                 lofile_output(serverlocation, data_output)
             time.sleep(1)  # waiting for a new input
 
-def start_upgrade(path):
+def start_update(path):
     # os.system(path)
     subprocess.Popen(path, shell=True)
 
 
-def upgrade():
+def update():
+    v.set("checking for updates ...")
     try:
         if os.path.isfile("_update.exe"):
             if os.path.isfile("update.exe"):
@@ -369,16 +375,14 @@ def upgrade():
         latest_version = latest_version.split("![Overlay]")[0]
         latest_version = latest_version.strip()
         if version < latest_version:
-            Thread(target=start_upgrade, args=(path,)).start()
+            Thread(target=start_update, args=(path,)).start()
             print("Starting update process")
             time.sleep(5)
+            root.destroy()
             os._exit(1)
     except:
         pass
 
-
-version = "0.7.2"
-upgrade()
 
 zones = {
     'Prophecy of Ahnket': {
