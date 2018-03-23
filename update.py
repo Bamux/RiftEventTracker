@@ -13,7 +13,6 @@ def update():
             os.makedirs("update")
         path = 'update/master.zip'
         url = "https://github.com/Bamux/RiftEventTracker/archive/master.zip"
-        print("Download the latest version:")
 
         r = requests.get(url, stream=True)
         with open(path, 'wb') as f:
@@ -61,4 +60,6 @@ for proc in psutil.process_iter():
     # check whether the process name matches
     if proc.name() == PROCNAME:
         proc.kill()
+
+print("A new version of RiftEvenetTracker is available. Update started:")
 update()
