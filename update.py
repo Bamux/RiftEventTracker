@@ -52,7 +52,7 @@ def update():
         print("Program successfully updated!")
         os.system("RiftEventTracker.exe")
     except:
-        print("An error has occurred, try to download the update again")
+        print("...")
         time.sleep(1)
         update()
 
