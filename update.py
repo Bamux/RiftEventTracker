@@ -4,7 +4,14 @@ from shutil import copyfile
 from clint.textui import progress
 import os
 import time
+import psutil
 
+PROCNAME = "RiftEventTracker.exe"
+
+for proc in psutil.process_iter():
+    # check whether the process name matches
+    if proc.name() == PROCNAME:
+        proc.kill()
 
 if not os.path.exists("update"):
     os.makedirs("update")
@@ -33,17 +40,16 @@ for file in zf.infolist():
         old_percent = percent
     zf.extract(file, "update")
 zf.close()
-print("Files will be copied please wait a moment.")
-time.sleep(1)
 
 copyfile('update/RiftEventTracker-master/update.exe', '_update.exe')
+copyfile('update/RiftEventTracker-master/README.md', 'README.md')
+copyfile('update/RiftEventTracker-master/RiftEventTracker.exe', 'RiftEventTracker.exe')
+
 files = os.listdir("update/RiftEventTracker-master")
 for f in files:
     if f != ".gitignore":
-        print(f)
         if not os.path.exists(f):
             shutil.move("update/RiftEventTracker-master/" + f, ".")
 
 shutil.rmtree("update")
 print("Program successfully updated!")
-time.sleep(10)
