@@ -6,14 +6,6 @@ import os
 import time, sys
 import psutil
 
-def cli_progress_test(end_val, bar_length=20):
-    for i in xrange(0, end_val):
-        percent = float(i) / end_val
-        hashes = '#' * int(round(percent * bar_length))
-        spaces = ' ' * (bar_length - len(hashes))
-        sys.stdout.write("\rPercent: [{0}] {1}%".format(hashes + spaces, int(round(percent * 100))))
-        sys.stdout.flush()
-
 
 def update():
     try:
@@ -40,9 +32,6 @@ def update():
             i = int((extracted_size * 100 / uncompress_size))
             print('\rExtract files: %3d%%' % i, end='', flush=True)
             time.sleep(0.1)
-            # if percent > old_percent:
-            #     print('{:02}'.format(percent) + " %")
-            #     old_percent = percent
             zf.extract(file, "update")
         zf.close()
 
