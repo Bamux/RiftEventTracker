@@ -4,18 +4,18 @@ import requests
 import json
 import time
 import win32com.client
-import win32ui
+import win32clipboard
 import pythoncom
 from threading import Thread
 import os
 import math
 import configparser
 from tkinter import *
-from tkinter import messagebox
 import codecs
 import subprocess
+import re
 
-version = "0.7.3"
+version = "0.7.4"
 
 def read_config(file):
     if os.path.isfile(file):
@@ -25,7 +25,9 @@ def read_config(file):
             config['Settings']['volume'] = "100"
         elif int(config['Settings']['volume']) < 0:
             config['Settings']['volume'] = "0"
-        config['GUI']['always_on_top'] = config['GUI'].get("always_on_top", "yes")
+        config['Settings']['lfm'] = config['Settings'].get("lfm", "no")
+        config['Settings']['auto_update'] = config['Settings'].get("auto_update", "yes")
+        config['GUI']['always_on_top'] = config['GUI'].get("always_on_top", "no")
     else:
         config = write_new_config(configfile)
     return config
@@ -51,6 +53,8 @@ def write_new_config(file):
     settings['voice'] = 'yes'
     settings['volume'] = '100'
     settings['unstable_events'] = 'no'
+    settings['lfm'] = 'no'
+    settings['auto_update'] = 'yes'
     config['GUI'] = {}
     gui = config['GUI']
     gui['x'] = '325'
@@ -114,87 +118,168 @@ def get_data(zone_id, serverlocation, url, unstable_events):
                                                  zone['name']]]
         else:
             data_output += [[0, shards[serverlocation][shardid]]]
-    data_output.sort(reverse=True)
     return data_output
 
 
-def outputloop(zone_id, serverlocation, url, unstable_events, voice, language, zonenames):
+def web_api(zone_id, serverlocation, url, unstable_events, voice, language, zonenames, lfm, first_run, eventlist):
+    data_output = get_data(zone_id, serverlocation, url, unstable_events)
+    unavailable_servers = 0
+    if data_output:
+        guioutput = ""
+        for item in data_output:
+            eventexist = False
+            for key in eventlist:
+                if item[0] == key[0]:
+                    eventexist = True
+                    break
+            if not eventexist:
+                eventlist += [[item[0], item[1], item[2], item[3]]]
+                # if item[0] == 0:
+                #     unavailable_servers += 1
+                if voice == "yes":
+                    if not first_run:
+                        beginning = "Event in"
+                        end = "on"
+                        if config_var['Settings']['language'] == 'ger':
+                            end = "auf"
+                        elif config_var['Settings']['language'] == 'fr':
+                            beginning = "Événement en"
+                            end = "au"
+                        text = beginning + " " + item[1] + " " + end + " " + item[2]
+                        Thread(target=saytext, args=(text,)).start()
+    # else:
+    #     v.set(" No event running")
+    #     first_run = False
+    # if unavailable_servers == len(shards[serverlocation]):
+    #     logfile_analysis(serverlocation, unstable_events)
+    return eventlist
+
+
+def outputloop(zone_id, serverlocation, url, unstable_events, voice, language, zonenames, lfm):  # analyzes each new line in the Log.txt
     update()
     v.set("loading data ...")
-    eventlist = []
     first_run = True
-    if serverlocation == "prime" or serverlocation == "log":
-        logfile_analysis(serverlocation, unstable_events)
+    logtext = ""
+    running_log = False
+    lfm_trigger = lfmtrigger()
+    data_output = []
+    eventlist = []
+    eventtimestamp = 0
+    if serverlocation == "prime" or serverlocation == "log" or lfm != "no":
+        guioutput = " Use /log in Rift to start tracking."
+        v.set(guioutput)
+        logtext = logfilecheck()
+        logtext.seek(0, 2)  # jumps to the end of the Log.txt
+        zone = ""
+        shardname = ""
+        previous_event = []
     while True:
-        if not root:
-            break
-        data_output = get_data(zone_id, serverlocation, url, unstable_events)
-        unavailable_servers = 0
-        if data_output:
-            guioutput = ""
-            for item in data_output:
-                if item[0] == 0:
-                    unavailable_servers += 1
-                    guioutput += " " + item[1] + " not available\n"
-                else:
-                    m = int(math.floor((time.time() - item[0]) / 60))
-                    if m < 0:
-                        m = 0
-                    if m < 100:
-                        m = '{:02}'.format(m)
-                        if language == "eng":
-                                if item[2] == "Brutwacht":
-                                    for name in zonenames:
-                                        if name[0] == item[3]:
-                                            item[3] = name[1]
-                                elif item[2] == "Brisesol":
-                                    for name in zonenames:
-                                        if name[2] == item[3]:
-                                            item[3] = name[1]
-                        elif language == "ger":
-                            for name in zonenames:
-                                if item[2] == "Brisesol":
-                                    if name[2] == item[3]:
-                                        item[3] = name[0]
-                                else:
-                                    if name[1] == item[3]:
-                                        item[3] = name[0]
-                        elif language == "fr":
-                            for name in zonenames:
-                                if item[2] == "Brutwacht":
-                                    if name[0] == item[3]:
-                                        item[3] = name[2]
-                                else:
-                                    if name[1] == item[3]:
-                                        item[3] = name[2]
-                        guioutput += (" " + m + " m  " + item[1] + " | " + item[2] + " | " + item[3] + '\n')
-                    if voice == "yes":
-                        eventexist = False
-                        for started in eventlist:
-                            if item[0] == started[0]:
-                                eventexist = True
-                        if not eventexist:
-                            eventlist += [(item[0], item[1])]
-                            if not first_run:
-                                beginning = "Event in"
-                                end = "on"
-                                if config_var['Settings']['language'] == 'ger':
-                                    end = "auf"
-                                elif config_var['Settings']['language'] == 'fr':
-                                    beginning = "Événement en"
-                                    end = "au"
-                                text = beginning + " " + item[1] + " " + end + " " + item[2]
+        if serverlocation == "prime" or serverlocation == "log" or lfm == "yes" or lfm != "no":
+            line = ""
+            log = ""
+            line = logtext.readline()  # read new line
+            line = line.strip()
+            low_line = line.lower()
+            timestamp = int(math.floor(time.time()))
+            if line:
+                if not running_log:
+                    running_log = True
+                    v.set(" Logfile found. Search for events started.")
+                if lfm != "no":
+                    if "lfm" in low_line or "/10" in low_line or "/20" in low_line:
+                        found = False
+                        for trigger in lfm_trigger:
+                            if "," in trigger[1]:
+                                triggers = trigger[1].split(",")
+                                for item in triggers:
+                                    if item.strip() in low_line:
+                                        found = True
+                                        lfm_zone = trigger[0]
+                                        break
+                            else:
+                                if trigger[1] in low_line:
+                                    found = True
+                                    lfm_zone = trigger[0]
+                                    break
+                        if found:
+                            found = False
+                            player_name = line.split("][")[1]
+                            player_name = player_name.split("]:")[0]
+                            event = [timestamp, lfm_zone, player_name]
+                            for item in data_output:
+                                if item[2] == player_name and item[1] == lfm_zone:
+                                    found = True
+                            if not found:
+                                data_output += [event]
+                                text = lfm_zone + " looking for more"
                                 Thread(target=saytext, args=(text,)).start()
-            if first_run:
-                first_run = False
-            if root:
-                v.set(guioutput)
+                                set_clipboard("/tell " + player_name + " +")
+                if lfm != "only" and serverlocation != "eu" and serverlocation !="us" and "[" in line and "]" in line and "!" in line:
+                    for shardname in shards[serverlocation].values():
+                        if shardname in line:
+                            for zone in zoneid.values():
+                                if zone in line:
+                                    condition = True
+                                    if unstable_events == "no" or unstable_events == "only":
+                                        if unstable_events == "only":
+                                            condition = False
+                                        if 'Unstable' in line or 'Instabil' in line or 'instable' in line:
+                                            if unstable_events == "only":
+                                                condition = True
+                                            else:
+                                                condition = False
+                                    if condition:
+                                        event = line.split("[")[2]
+                                        event = event.split("]")[0]
+                                        # timestamp = int(math.floor(time.time()))
+                                        event = [timestamp, zone, shardname, event]
+                                        if previous_event and event[3] == previous_event[3] and timestamp - previous_event[0] < 10:
+                                            condition = False
+                                        if condition:
+                                            previous_event = event
+                                            data_output += [event]
+                                            event = ()
+                                            # lofile_output(serverlocation, data_output)
+                                            beginning = "Event in"
+                                            end = "on"
+                                            if config_var['Settings']['language'] == 'ger':
+                                                end = "auf"
+                                            elif config_var['Settings']['language'] == 'fr':
+                                                beginning = "Événement en"
+                                                end = "au"
+                                            if serverlocation == "prime":
+                                                text = beginning + " " + zone
+                                            else:
+                                                text = beginning + " " + zone + " " + end + " " + shardname
+                                            Thread(target=saytext, args=(text,)).start()
+                                    break
+                            break
+            else:
+                if data_output:
+                    i = 0
+                    for item in data_output:
+                        if len(item) == 3:
+                            if timestamp - item[0] > 300:
+                                del data_output[i]
+                                i += 1
+                        else:
+                            if timestamp - item[0] > 600:
+                                del item
+                if lfm != "only" and serverlocation != "prime" and serverlocation != "log" and timestamp - eventtimestamp > 15:
+                    eventtimestamp = timestamp
+                    eventlist = web_api(zone_id, serverlocation, url, unstable_events, voice, language, zonenames, lfm,
+                                        first_run, eventlist)
+                    first_run = False
+                lofile_output(serverlocation, data_output, eventlist, zonenames, language, running_log)
+                time.sleep(1)  # waiting for a new input
         else:
-            v.set(" No event running")
+            eventlist = web_api(zone_id, serverlocation, url, unstable_events, voice, language, zonenames, lfm,
+                                first_run, eventlist)
+            running_log = True
+            lofile_output(serverlocation, data_output, eventlist, zonenames, language, running_log)
             first_run = False
-        if unavailable_servers == len(shards[serverlocation]):
-            logfile_analysis(serverlocation, unstable_events)
-        time.sleep(15)
+            time.sleep(15)
+
 
 
 def saytext(text):
@@ -206,6 +291,13 @@ def saytext(text):
             pass
 
 
+def set_clipboard(text):  # add to windows clipboard
+    win32clipboard.OpenClipboard()
+    win32clipboard.EmptyClipboard()
+    win32clipboard.SetClipboardText(text)
+    win32clipboard.CloseClipboard()
+
+
 def close():
     file = configfile
     config = ""
@@ -213,6 +305,8 @@ def close():
         config = configparser.ConfigParser()
         config.read(configfile)
     zones_id = zones_to_track(config)
+    config['Settings']['lfm'] = config_var['Settings']['lfm']
+    config['Settings']['auto_update'] = config_var['Settings']['auto_update']
     config['GUI']['x'] = (str(root.winfo_x()))
     config['GUI']['y'] = (str(root.winfo_y()))
     config['GUI']['width'] = (str(root.winfo_width()))
@@ -272,116 +366,92 @@ def logfilecheck():
         time.sleep(10)
 
 
-def lofile_output(serverlocation, data_output):
+def lofile_output(serverlocation, data_output, eventlist, zonenames, language, running_log):
     guioutput = ""
+    if not running_log:
+        if serverlocation == "prime":
+            guioutput = " Use /log in Rift to start tracking.\n\n"
+        else:
+            guioutput = " Use /log in Rift to search for lfm. In the lfm.txt you can specify what you want to search for\n\n"
+    data_output = data_output + eventlist
+    data_output.sort(reverse=True)
     i = 0
+    timestamp = int(math.floor(time.time()))
+    # print(data_output)
     for item in data_output:
+        if  serverlocation == "us" or serverlocation == "eu":
+            if language == "eng":
+                if item[2] == "Brutwacht":
+                    for name in zonenames:
+                        if name[0] == item[3]:
+                            item[3] = name[1]
+                elif item[2] == "Brisesol":
+                    for name in zonenames:
+                        if name[2] == item[3]:
+                            item[3] = name[1]
+            elif language == "ger":
+                for name in zonenames:
+                    if item[2] == "Brisesol":
+                        if name[2] == item[3]:
+                            item[3] = name[0]
+                    else:
+                        if name[1] == item[3]:
+                            item[3] = name[0]
+            elif language == "fr":
+                for name in zonenames:
+                    if item[2] == "Brutwacht":
+                        if name[0] == item[3]:
+                            item[3] = name[2]
+                    else:
+                        if name[1] == item[3]:
+                            item[3] = name[2]
         if i < 15:
+            i += 1
             m = int(math.floor((time.time() - item[0]) / 60))
             if m < 0:
                 m = 0
             if m < 100:
                 m = '{:02}'.format(m)
-            if serverlocation == "prime":
-                guioutput += (" " + m + " m  " + item[1] + " | " + item[3] + "\n")
-            else:
-                guioutput += (" " + m + " m  " + item[1] + " | " + item[2] + " | " + item[3] + '\n')
-        else:
-            break
+                if len(item) == 4:
+                    if serverlocation == "prime":
+                        guioutput += (" " + m + " m  " + item[1] + " | " + item[3] + "\n")
+                    else:
+                        guioutput += (" " + m + " m  " + item[1] + " | " + item[2] + " | " + item[3] + '\n')
+                else:
+                    guioutput += (" " + m + " m  " + item[1] + " | " + item[2] + "\n")
     v.set(guioutput)
 
 
-def logfile_analysis(serverlocation, unstable_events):  # analyzes each new line in the Log.txt
-    guioutput = " WebApi not aviable!\n Use /log in Rift as an alternative data source for running events."
-    v.set(guioutput)
-    logtext = logfilecheck()
-    logtext.seek(0, 2)  # jumps to the end of the Log.txt
-    data_output = []
-    zone = ""
-    shardname = ""
-    running_log = False
-    previous_event = []
-    while True:
-        line = ""
-        log = ""
-        line = logtext.readline()  # read new line
-        if line:
-            if not running_log:
-                running_log = True
-                v.set(" Logfile found. Search for events started.")
-            if "[" in line and "]" in line and "!" in line:
-                for shardname in shards[serverlocation].values():
-                    if shardname in line:
-                        print(shardname)
-                        for zone in zoneid.values():
-                            if zone in line:
-                                condition = True
-                                if unstable_events == "no" or unstable_events == "only":
-                                    if unstable_events == "only":
-                                        condition = False
-                                    if 'Unstable' in line or 'Instabil' in line or 'instable' in line:
-                                        if unstable_events == "only":
-                                            condition = True
-                                        else:
-                                            condition = False
-                                if condition:
-                                    event = line.split("[")[2]
-                                    event = event.split("]")[0]
-                                    timestamp = int(math.floor(time.time()))
-                                    event = [timestamp, zone, shardname, event]
-                                    if previous_event and event[3] == previous_event[3] and timestamp - previous_event[0] < 10:
-                                        condition = False
-                                    if condition:
-                                        previous_event = event
-                                        data_output += [event]
-                                        data_output.sort(reverse=True)
-                                        event = ()
-                                        lofile_output(serverlocation, data_output)
-                                        beginning = "Event in"
-                                        end = "on"
-                                        if config_var['Settings']['language'] == 'ger':
-                                            end = "auf"
-                                        elif config_var['Settings']['language'] == 'fr':
-                                            beginning = "Événement en"
-                                            end = "au"
-                                        if serverlocation == "prime":
-                                            text = beginning + " " + zone
-                                        else:
-                                            text = beginning + " " + zone + " " + end + " " + shardname
-                                        Thread(target=saytext, args=(text,)).start()
-                                break
-                        break
-        else:
-            if data_output:
-                lofile_output(serverlocation, data_output)
-            time.sleep(1)  # waiting for a new input
-
-def start_update(path):
-    # os.system(path)
-    subprocess.Popen(path, shell=True)
+def lfmtrigger():
+    lfm_trigger = []
+    if os.path.isfile("lfm.txt"):
+        line = codecs.open("lfm.txt", 'r', "utf-8")
+        for item in line:
+            if "#" not in item and ";" not in item:
+                lfm_trigger += [[item.split("=")[0].strip(), item.split("=")[1].strip().lower()]]
+    return lfm_trigger
 
 
 def update():
-    v.set("checking for updates ...")
-    try:
-        if os.path.isfile("_update.exe"):
-            if os.path.isfile("update.exe"):
-                os.remove("update.exe")
-            os.rename('_update.exe', 'update.exe')
-        url = "https://raw.githubusercontent.com/Bamux/RiftEventTracker/master/README.md"
-        path = "update.exe"
-        latest_version = requests.get(url).text  # => str, not bytes
-        latest_version = latest_version.split("## Rift Event Tracker ")[1]
-        latest_version = latest_version.split("![Overlay]")[0]
-        latest_version = latest_version.strip()
-        if version < latest_version:
-            Thread(target=start_update, args=(path,)).start()
-            print("Starting update process")
-            time.sleep(5)
-            root.destroy()
-            os._exit(1)
-    except:
-        pass
+    if config_var['Settings']['auto_update'] == "yes":
+        v.set("checking for updates ...")
+        try:
+            if os.path.isfile("_update.exe"):
+                if os.path.isfile("update.exe"):
+                    os.remove("update.exe")
+                os.rename('_update.exe', 'update.exe')
+            url = "https://raw.githubusercontent.com/Bamux/RiftEventTracker/master/README.md"
+            path = "update.exe"
+            latest_version = requests.get(url).text  # => str, not bytes
+            latest_version = latest_version.split("## Rift Event Tracker ")[1]
+            latest_version = latest_version.split("![Overlay]")[0]
+            latest_version = latest_version.strip()
+            if version < latest_version:
+                print("Old Version: " + version + " New Version: " +  latest_version)
+                print("Starting update process")
+                subprocess.Popen(path, shell=True)
+        except:
+            pass
 
 
 zones = {
@@ -486,5 +556,5 @@ if config_var["GUI"]['borderless'] == "yes":
 
 Thread(target=outputloop, args=(zoneid, config_var['Settings']['serverlocation'], webapi,
                                 config_var['Settings']['unstable_events'], config_var['Settings']['voice'],
-                                config_var['Settings']['language'], zone_names)).start()
+                                config_var['Settings']['language'], zone_names, config_var['Settings']['lfm'])).start()
 mainloop()
