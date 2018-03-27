@@ -124,16 +124,18 @@ def get_data(zone_id, serverlocation, url, unstable_events):
 def web_api(zone_id, serverlocation, url, unstable_events, voice, language, zonenames, lfm, first_run, eventlist):
     data_output = get_data(zone_id, serverlocation, url, unstable_events)
     unavailable_servers = 0
+    events = []
+    print(eventlist)
     if data_output:
-        guioutput = ""
         for item in data_output:
             eventexist = False
+            events += [[item[0], item[1], item[2], item[3]]]
             for key in eventlist:
+                # print(key)
                 if item[0] == key[0]:
                     eventexist = True
                     break
             if not eventexist:
-                eventlist += [[item[0], item[1], item[2], item[3]]]
                 # if item[0] == 0:
                 #     unavailable_servers += 1
                 if voice == "yes":
@@ -152,7 +154,8 @@ def web_api(zone_id, serverlocation, url, unstable_events, voice, language, zone
     #     first_run = False
     # if unavailable_servers == len(shards[serverlocation]):
     #     logfile_analysis(serverlocation, unstable_events)
-    return eventlist
+    # print(events)
+    return events
 
 
 def outputloop(zone_id, serverlocation, url, unstable_events, voice, language, zonenames, lfm):  # analyzes each new line in the Log.txt
