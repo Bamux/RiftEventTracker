@@ -4,7 +4,7 @@
 Download latest Version: https://github.com/Bamux/RiftEventTracker/archive/master.zip
 
 Features:
-- text to Speach announcement of events (zone and server) and lfm raids/experts
+- text to speach announcement of events (zone and server) and lfm raids/experts
 - overlay display of running events and lfm raids/experts
 - with strg + v you can quickly answer a player who is looking for other players with lfm
 
