@@ -15,7 +15,7 @@ import codecs
 import subprocess
 import re
 
-version = "0.7.5"
+version = "0.7.6"
 
 def read_config(file):
     if os.path.isfile(file):
@@ -361,6 +361,9 @@ def logfilecheck():
             log_exists = True
         elif os.path.isfile('C:\Programs\RIFT~1\Log.txt'):
             log_file = 'C:\Programs\RIFT~1\Log.txt'
+            log_exists = True
+        elif os.path.isfile('D:\Documents\RIFT\Log.txt'):
+            log_file = 'D:\Documents\RIFT\Log.txt'
             log_exists = True
         if log_exists:
             logtext = codecs.open(log_file, 'r', "utf-8")
