@@ -31,9 +31,8 @@ Features:
   auto_update = yes or no (if you want the program to keep itself up to date use yes)
   
 ## Add Raids, Experts or other activities to be displayed
-- change in the config.ini following setting: lfm = yes
-- add new raids, experts or other activities to lfm.txt
-- Raidname = Keyword most searched for e.g. Bastion of Steal = BoS
+- to activate the lfm search mode you have to change the config.ini: lfm = yes
+- add new raids, experts or other activities to lfm.txt for e.g. Bastion of Steal = BoS
 - to deactivate a raid, simply place ; or # at the beginning of the line
 
   
