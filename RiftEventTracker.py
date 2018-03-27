@@ -176,7 +176,7 @@ def outputloop(zone_id, serverlocation, url, unstable_events, voice, language, z
         shardname = ""
         previous_event = []
     while True:
-        if serverlocation == "prime" or serverlocation == "log" or lfm == "yes" or lfm != "no":
+        if serverlocation == "prime" or serverlocation == "log" or lfm != "no":
             line = ""
             log = ""
             line = logtext.readline()  # read new line
@@ -307,8 +307,8 @@ def close():
         config = configparser.ConfigParser()
         config.read(configfile)
     zones_id = zones_to_track(config)
-    config['Settings']['lfm'] = config_var['Settings']['lfm']
-    config['Settings']['auto_update'] = config_var['Settings']['auto_update']
+    config['Settings']['lfm'] = config['Settings'].get("lfm", "no")
+    config['Settings']['auto_update'] = config['Settings'].get("auto_update", "yes")
     config['GUI']['x'] = (str(root.winfo_x()))
     config['GUI']['y'] = (str(root.winfo_y()))
     config['GUI']['width'] = (str(root.winfo_width()))
@@ -365,7 +365,9 @@ def logfilecheck():
         if log_exists:
             logtext = codecs.open(log_file, 'r', "utf-8")
             return logtext
-        time.sleep(10)
+        guioutput = "Couldn't find the logfile.\nPlease use /log in Rift to create a logfile."
+        v.set(guioutput)
+        time.sleep(5)
 
 
 def lofile_output(serverlocation, data_output, eventlist, zonenames, language, running_log):
