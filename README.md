@@ -29,6 +29,11 @@ Features:
   lfm = yes or no (shows if someone is looking for a group, see also lfm.txt)<br>
   auto_update = yes or no (if you want the program to keep itself up to date use yes)
   
+## Add Raids, Experts or other activities to be displayed
+- change in the config.ini following setting: lfm = yes
+- add new raids, experts or other activities to lfm.txt
+
+  
 ## Change your Text to Speech voice
 - Open the Windows Text to Speech Engine. Default folder is C:\Windows\SysWOW64\Speech\SpeechUX\sapi.cpl
 - Choose a voice that you like
