@@ -32,6 +32,7 @@ Features:
 ## Add Raids, Experts or other activities to be displayed
 - change in the config.ini following setting: lfm = yes
 - add new raids, experts or other activities to lfm.txt
+- Raidname = Keyword most searched for e.g. Bastion of Steal = BoS
 
   
 ## Change your Text to Speech voice
