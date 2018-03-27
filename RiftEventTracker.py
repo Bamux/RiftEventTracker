@@ -125,7 +125,6 @@ def web_api(zone_id, serverlocation, url, unstable_events, voice, language, zone
     data_output = get_data(zone_id, serverlocation, url, unstable_events)
     unavailable_servers = 0
     events = []
-    print(eventlist)
     if data_output:
         for item in data_output:
             eventexist = False
