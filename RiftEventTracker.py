@@ -15,7 +15,7 @@ import codecs
 import subprocess
 import re
 
-version = "0.7.4"
+version = "0.7.5"
 
 def read_config(file):
     if os.path.isfile(file):
