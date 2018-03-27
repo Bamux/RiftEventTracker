@@ -1,4 +1,4 @@
-## Rift Event Tracker 0.7.3
+## Rift Event Tracker 0.7.4
 ![Overlay](https://cdn.discordapp.com/attachments/374932500910309379/422081814950313984/unknown.png)
 
 Download latest Version: https://github.com/Bamux/RiftEventTracker/archive/master.zip
@@ -26,6 +26,8 @@ Features:
   voice = yes or no<br>
   volume = 0-100<br>
   unstable_events = yes, no or only<br>
+  lfm = yes or no (shows if someone is looking for a group, see also lfm.txt)<br>
+  auto_update = yes or no (if you want the program to keep itself up to date use yes)
   
 ## Change your Text to Speech voice
 - Open the Windows Text to Speech Engine. Default folder is C:\Windows\SysWOW64\Speech\SpeechUX\sapi.cpl
