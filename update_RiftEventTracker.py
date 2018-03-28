@@ -36,7 +36,7 @@ def update():
             zf.extract(file, "update")
         zf.close()
 
-        copyfile('update/RiftEventTracker-master/update.exe', '_update.exe')
+        copyfile('update/RiftEventTracker-master/update_RiftEventTracker.exe', '_update_RiftEventTracker.exe')
         copyfile('update/RiftEventTracker-master/README.md', 'README.md')
         copyfile('update/RiftEventTracker-master/RiftEventTracker.exe', 'RiftEventTracker.exe')
 
@@ -45,9 +45,7 @@ def update():
             if f != ".gitignore":
                 if not os.path.exists(f):
                     shutil.move("update/RiftEventTracker-master/" + f, ".")
-
         shutil.rmtree("update")
-        # os.system("RiftEventTracker.exe")
     except:
         time.sleep(1)
         update()
