@@ -50,6 +50,7 @@ def update():
         time.sleep(1)
         update()
 
+
 PROCNAME = "RiftEventTracker.exe"
 for proc in psutil.process_iter():
     if proc.name() == PROCNAME:
