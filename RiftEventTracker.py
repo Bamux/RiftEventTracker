@@ -13,9 +13,8 @@ import configparser
 from tkinter import *
 import codecs
 import subprocess
-import re
 
-version = "0.7.6"
+version = "0.7.7"
 
 def read_config(file):
     if os.path.isfile(file):
@@ -443,12 +442,12 @@ def update():
     if config_var['Settings']['auto_update'] == "yes":
         v.set("checking for updates ...")
         try:
-            if os.path.isfile("_update.exe"):
-                if os.path.isfile("update.exe"):
-                    os.remove("update.exe")
-                os.rename('_update.exe', 'update.exe')
+            if os.path.isfile("_update_RiftEventTracker.exe"):
+                if os.path.isfile("update_RiftEventTracker.exe"):
+                    os.remove("update_RiftEventTracker.exe")
+                os.rename('_update_RiftEventTracker.exe', 'update_RiftEventTracker.exe')
             url = "https://raw.githubusercontent.com/Bamux/RiftEventTracker/master/README.md"
-            path = "update.exe"
+            path = "update_RiftEventTracker.exe"
             latest_version = requests.get(url).text  # => str, not bytes
             latest_version = latest_version.split("## Rift Event Tracker ")[1]
             latest_version = latest_version.split("![Overlay]")[0]
@@ -457,6 +456,8 @@ def update():
                 print("Old Version: " + version + " New Version: " +  latest_version)
                 print("Starting update process")
                 subprocess.Popen(path, shell=True)
+                time.sleep(5)
+                os._exit(1)
         except:
             pass
 
