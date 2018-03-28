@@ -14,7 +14,7 @@ from tkinter import *
 import codecs
 import subprocess
 
-version = "0.7.7"
+version = "0.7.8"
 
 def read_config(file):
     if os.path.isfile(file):
@@ -443,11 +443,11 @@ def update():
         v.set("checking for updates ...")
         try:
             if os.path.isfile("_update.exe"):
-                if os.path.isfile("update_RiftEventTracker.exe"):
+                if os.path.isfile("update.exe"):
                     os.remove("update.exe")
                 os.rename('_update.exe', 'update.exe')
             url = "https://raw.githubusercontent.com/Bamux/RiftEventTracker/master/README.md"
-            path = "update_RiftEventTracker.exe"
+            path = "update.exe"
             latest_version = requests.get(url).text  # => str, not bytes
             latest_version = latest_version.split("## Rift Event Tracker ")[1]
             latest_version = latest_version.split("![Overlay]")[0]
