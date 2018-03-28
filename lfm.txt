@@ -1,5 +1,0 @@
-Bastion of Steel = bos
-Raid Rift = rr
-Rise of the Phoenix = rotp
-Tartaric Depths normal = td nm, tdnm
-Tartaric Depths easy =  td ez,  td easy
