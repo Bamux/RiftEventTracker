@@ -442,10 +442,10 @@ def update():
     if config_var['Settings']['auto_update'] == "yes":
         v.set("checking for updates ...")
         try:
-            if os.path.isfile("_update_RiftEventTracker.exe"):
+            if os.path.isfile("_update.exe"):
                 if os.path.isfile("update_RiftEventTracker.exe"):
-                    os.remove("update_RiftEventTracker.exe")
-                os.rename('_update_RiftEventTracker.exe', 'update_RiftEventTracker.exe')
+                    os.remove("update.exe")
+                os.rename('_update.exe', 'update.exe')
             url = "https://raw.githubusercontent.com/Bamux/RiftEventTracker/master/README.md"
             path = "update_RiftEventTracker.exe"
             latest_version = requests.get(url).text  # => str, not bytes
