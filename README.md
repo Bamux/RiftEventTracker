@@ -29,7 +29,7 @@ Features:
   volume = 0-100<br>
   unstable_events = yes, no or only<br>
   lfm = yes, no or only (shows if someone is looking for a group, see also lfm.txt)<br>
-  auto_update = yes or no (if you want the program to keep itself up to date use yes)
+  auto_update = yes or no (if you want the program to keep itself up to date use yes)<br>
   logfile = path to your Log.txt which is created by Rift when you type /log (e.g. C:\Users\Username\Documents\RIFT\Log.txt)
   
 ## Add Raids, Experts or other activities to be displayed
