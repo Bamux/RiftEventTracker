@@ -1,4 +1,4 @@
-## Rift Event Tracker 0.7.8
+## Rift Event Tracker 0.7.9
 ![Overlay](https://cdn.discordapp.com/attachments/374932500910309379/422081814950313984/unknown.png)
 
 Download latest Version: https://github.com/Bamux/RiftEventTracker/archive/master.zip
@@ -20,6 +20,7 @@ Features:
 - after the first start a configuration file is created in the same folder
 - the configuration of the program is done via the config. ini here you can deactivate/activate the zones to be tracked and change the interface layout
 - to deactivate a zone, simply place ; at the beginning of the line or delete the line
+- the program finds the Log.txt automatically, but if it does not find any Log.txt, check the path to the logfile in config.ini
 
   [Settings]<br>
   serverlocation = eu, us or prime<br>
@@ -29,6 +30,7 @@ Features:
   unstable_events = yes, no or only<br>
   lfm = yes, no or only (shows if someone is looking for a group, see also lfm.txt)<br>
   auto_update = yes or no (if you want the program to keep itself up to date use yes)
+  logfile = path to your Log.txt which is created by Rift when you type /log (e.g. C:\Users\Enermax\Documents\RIFT\Log.txt)
   
 ## Add Raids, Experts or other activities to be displayed
 - to activate the lfm search mode you have to change the config.ini: lfm = yes

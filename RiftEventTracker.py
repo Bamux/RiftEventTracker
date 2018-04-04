@@ -14,7 +14,7 @@ from tkinter import *
 import codecs
 import subprocess
 
-version = "0.7.8"
+version = "0.7.9"
 
 def read_config(file):
     if os.path.isfile(file):
@@ -26,6 +26,7 @@ def read_config(file):
             config['Settings']['volume'] = "0"
         config['Settings']['lfm'] = config['Settings'].get("lfm", "no")
         config['Settings']['auto_update'] = config['Settings'].get("auto_update", "yes")
+        config['Settings']['logfile'] = config['Settings'].get("logfile", "Log.txt")
         config['GUI']['always_on_top'] = config['GUI'].get("always_on_top", "no")
     else:
         config = write_new_config(configfile)
@@ -54,6 +55,7 @@ def write_new_config(file):
     settings['unstable_events'] = 'no'
     settings['lfm'] = 'no'
     settings['auto_update'] = 'yes'
+    settings['logfile'] = 'Log.txt'
     config['GUI'] = {}
     gui = config['GUI']
     gui['x'] = '325'
@@ -308,6 +310,7 @@ def close():
     zones_id = zones_to_track(config)
     config['Settings']['lfm'] = config['Settings'].get("lfm", "no")
     config['Settings']['auto_update'] = config['Settings'].get("auto_update", "yes")
+    config['Settings']['logfile'] = config_var['Settings']['logfile']
     config['GUI']['x'] = (str(root.winfo_x()))
     config['GUI']['y'] = (str(root.winfo_y()))
     config['GUI']['width'] = (str(root.winfo_width()))
@@ -349,10 +352,14 @@ def rightclick(event):
 
 
 def logfilecheck():
-    while True:
-        log_exists = False
-        log_file = ""
-        if os.path.isfile(os.path.expanduser('~\Documents\RIFT\Log.txt')):
+    log_exists = False
+    log_file = ""
+    logtext = ""
+    try:
+        if os.path.isfile(os.path.expanduser(config_var['Settings']['logfile'])):
+            log_file = os.path.expanduser(config_var['Settings']['logfile'])
+            log_exists = True
+        elif os.path.isfile(os.path.expanduser('~\Documents\RIFT\Log.txt')):
             log_file = os.path.expanduser('~\Documents\RIFT\Log.txt')
             log_exists = True
         elif os.path.isfile('C:\Program Files (x86)\RIFT Game\Log.txt'):
@@ -364,12 +371,18 @@ def logfilecheck():
         elif os.path.isfile('D:\Documents\RIFT\Log.txt'):
             log_file = 'D:\Documents\RIFT\Log.txt'
             log_exists = True
+        elif os.path.isfile('D:\Dokumente\RIFT\Log.txt'):
+            log_file = 'D:\Dokumente\RIFT\Log.txt'
+            log_exists = True
         if log_exists:
+            config_var['Settings']['logfile'] = log_file
             logtext = codecs.open(log_file, 'r', "utf-8")
             return logtext
+    except:
         guioutput = "Couldn't find the logfile.\nPlease use /log in Rift to create a logfile."
         v.set(guioutput)
         time.sleep(5)
+        logfilecheck()
 
 
 def lofile_output(serverlocation, data_output, eventlist, zonenames, language, running_log):
