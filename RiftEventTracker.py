@@ -14,7 +14,7 @@ from tkinter import *
 import codecs
 import subprocess
 
-version = "0.7.9"
+version = "0.8.0"
 
 def read_config(file):
     if os.path.isfile(file):
@@ -168,7 +168,8 @@ def outputloop(zone_id, serverlocation, url, unstable_events, voice, language, z
     data_output = []
     eventlist = []
     eventtimestamp = 0
-    if serverlocation == "prime" or serverlocation == "log" or lfm != "no":
+    text = ""
+    if serverlocation == "log" or lfm != "no":
         guioutput = " Use /log in Rift to start tracking."
         v.set(guioutput)
         logtext = logfilecheck()
@@ -177,7 +178,7 @@ def outputloop(zone_id, serverlocation, url, unstable_events, voice, language, z
         shardname = ""
         previous_event = []
     while True:
-        if serverlocation == "prime" or serverlocation == "log" or lfm != "no":
+        if serverlocation == "log" or lfm != "no":
             line = ""
             log = ""
             line = logtext.readline()  # read new line
@@ -189,7 +190,8 @@ def outputloop(zone_id, serverlocation, url, unstable_events, voice, language, z
                     running_log = True
                     v.set(" Logfile found. Search for events started.")
                 if lfm != "no":
-                    if "lfm" in low_line or "/10" in low_line or "/20" in low_line:
+                    if "lfm" in low_line or "lf1m" in low_line or "lf2m" in low_line or "lf3m" or "lf4m" in low_line \
+                            or "lf5m" in low_line or "/10" in low_line or "/20" in low_line:
                         found = False
                         for trigger in lfm_trigger:
                             if "," in trigger[1]:
@@ -250,9 +252,6 @@ def outputloop(zone_id, serverlocation, url, unstable_events, voice, language, z
                                             elif config_var['Settings']['language'] == 'fr':
                                                 beginning = "Événement en"
                                                 end = "au"
-                                            if serverlocation == "prime":
-                                                text = beginning + " " + zone
-                                            else:
                                                 text = beginning + " " + zone + " " + end + " " + shardname
                                             Thread(target=saytext, args=(text,)).start()
                                     break
@@ -268,7 +267,7 @@ def outputloop(zone_id, serverlocation, url, unstable_events, voice, language, z
                         else:
                             if timestamp - item[0] > 600:
                                 del item
-                if lfm != "only" and serverlocation != "prime" and serverlocation != "log" and timestamp - eventtimestamp > 15:
+                if lfm != "only" and serverlocation != "log" and timestamp - eventtimestamp > 15:
                     eventtimestamp = timestamp
                     eventlist = web_api(zone_id, serverlocation, url, unstable_events, voice, language, zonenames, lfm,
                                         first_run, eventlist)
@@ -279,7 +278,10 @@ def outputloop(zone_id, serverlocation, url, unstable_events, voice, language, z
             eventlist = web_api(zone_id, serverlocation, url, unstable_events, voice, language, zonenames, lfm,
                                 first_run, eventlist)
             running_log = True
-            lofile_output(serverlocation, data_output, eventlist, zonenames, language, running_log)
+            if eventlist:
+                lofile_output(serverlocation, data_output, eventlist, zonenames, language, running_log)
+            else:
+                v.set(" No event running")
             first_run = False
             time.sleep(15)
 
@@ -388,10 +390,7 @@ def logfilecheck():
 def lofile_output(serverlocation, data_output, eventlist, zonenames, language, running_log):
     guioutput = ""
     if not running_log:
-        if serverlocation == "prime":
-            guioutput = " Use /log in Rift to start tracking.\n\n"
-        else:
-            guioutput = " Use /log in Rift to search for lfm. In the lfm.txt you can specify what you want to search for\n\n"
+        guioutput = " Use /log in Rift to search for lfm. In the lfm.txt you can specify what you want to search for\n\n"
     data_output = data_output + eventlist
     data_output.sort(reverse=True)
     i = 0
@@ -432,10 +431,7 @@ def lofile_output(serverlocation, data_output, eventlist, zonenames, language, r
             if m < 100:
                 m = '{:02}'.format(m)
                 if len(item) == 4:
-                    if serverlocation == "prime":
-                        guioutput += (" " + m + " m  " + item[1] + " | " + item[3] + "\n")
-                    else:
-                        guioutput += (" " + m + " m  " + item[1] + " | " + item[2] + " | " + item[3] + '\n')
+                    guioutput += (" " + m + " m  " + item[1] + " | " + item[2] + " | " + item[3] + '\n')
                 else:
                     guioutput += (" " + m + " m  " + item[1] + " | " + item[2] + "\n")
     v.set(guioutput)
@@ -538,7 +534,7 @@ shards = {
     2722: 'Zaviel',
     },
     'prime': {
-        0: 'Vigil',
+        1801: 'Vigil',
     },
 }
 
@@ -552,8 +548,11 @@ try:
     speak.Volume = int(config_var['Settings']['volume'])
 except:
     pass
-webapi = "http://web-api-" + config_var['Settings']['serverlocation'] \
-         + ".riftgame.com:8080/chatservice/zoneevent/list?shardId="
+if config_var['Settings']['serverlocation'] == 'prime':
+    webapi = "http://web-api-us" + ".riftgame.com:8080/chatservice/zoneevent/list?shardId="
+else:
+    webapi = "http://web-api-" + config_var['Settings']['serverlocation'] \
+             + ".riftgame.com:8080/chatservice/zoneevent/list?shardId="
 zoneid = zones_to_track(config_var)
 borderless = config_var["GUI"]['borderless']
 

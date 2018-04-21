@@ -1,4 +1,4 @@
-## Rift Event Tracker 0.7.9
+## Rift Event Tracker 0.8.0
 ![Overlay](https://cdn.discordapp.com/attachments/374932500910309379/422081814950313984/unknown.png)
 
 Download latest Version: https://github.com/Bamux/RiftEventTracker/archive/master.zip
