@@ -147,7 +147,10 @@ def web_api(zone_id, serverlocation, url, unstable_events, voice, language, zone
                         elif config_var['Settings']['language'] == 'fr':
                             beginning = "Événement en"
                             end = "au"
-                        text = beginning + " " + item[1] + " " + end + " " + item[2]
+                        if serverlocation == "prime":
+                            text = beginning + " " + item[1]
+                        else:
+                            text = beginning + " " + item[1] + " " + end + " " + item[2]
                         Thread(target=saytext, args=(text,)).start()
     # else:
     #     v.set(" No event running")
