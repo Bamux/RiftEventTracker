@@ -2,4 +2,4 @@
 Raid Rift = rr
 Rise of the Phoenix = rotp
 Tartaric Depths normal = td nm, tdnm
-Tartaric Depths easy =  td ez,  td easy
+Tartaric Depths easy =  td ez,  td easy, td em
