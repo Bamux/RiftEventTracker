@@ -14,7 +14,7 @@ from tkinter import *
 import codecs
 import subprocess
 
-version = "0.8.0"
+version = "0.8.1"
 
 def read_config(file):
     if os.path.isfile(file):
@@ -187,14 +187,17 @@ def outputloop(zone_id, serverlocation, url, unstable_events, voice, language, z
             line = logtext.readline()  # read new line
             line = line.strip()
             low_line = line.lower()
+            try:
+                low_line = low_line.split("]: ")[1]
+            except:
+                pass
             timestamp = int(math.floor(time.time()))
             if line:
                 if not running_log:
                     running_log = True
                     v.set(" Logfile found. Search for events started.")
                 if lfm != "no":
-                    if "lfm" in low_line or "lf1m" in low_line or "lf2m" in low_line or "lf3m" or "lf4m" in low_line \
-                            or "lf5m" in low_line or "/10" in low_line or "/20" in low_line:
+                    if "lfm" in low_line or "lf1m" in low_line or "lf2m" in low_line  or "lf3m" in low_line or "lf4m" in low_line or  "lf5m" in low_line or "/10" in low_line or "/20" in low_line:
                         found = False
                         for trigger in lfm_trigger:
                             if "," in trigger[1]:
@@ -211,17 +214,21 @@ def outputloop(zone_id, serverlocation, url, unstable_events, voice, language, z
                                     break
                         if found:
                             found = False
-                            player_name = line.split("][")[1]
-                            player_name = player_name.split("]:")[0]
-                            event = [timestamp, lfm_zone, player_name]
-                            for item in data_output:
-                                if item[2] == player_name and item[1] == lfm_zone:
-                                    found = True
-                            if not found:
-                                data_output += [event]
-                                text = lfm_zone + " looking for more"
-                                Thread(target=saytext, args=(text,)).start()
-                                set_clipboard("/tell " + player_name + " +")
+                            # print (line)
+                            try:
+                                player_name = line.split("][")[1]
+                                player_name = player_name.split("]:")[0]
+                                event = [timestamp, lfm_zone, player_name]
+                                for item in data_output:
+                                    if item[2] == player_name and item[1] == lfm_zone:
+                                        found = True
+                                if not found:
+                                    data_output += [event]
+                                    text = lfm_zone + " looking for more"
+                                    Thread(target=saytext, args=(text,)).start()
+                                    set_clipboard("/tell " + player_name + " +")
+                            except:
+                                print("Error")
                 if lfm != "only" and serverlocation != "eu" and serverlocation !="us" and "[" in line and "]" in line and "!" in line:
                     for shardname in shards[serverlocation].values():
                         if shardname in line:
