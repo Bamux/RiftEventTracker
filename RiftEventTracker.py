@@ -14,7 +14,7 @@ from tkinter import *
 import codecs
 import subprocess
 
-version = "0.8.1"
+version = "0.8.2"
 
 def read_config(file):
     if os.path.isfile(file):
@@ -28,6 +28,7 @@ def read_config(file):
         config['Settings']['auto_update'] = config['Settings'].get("auto_update", "yes")
         config['Settings']['logfile'] = config['Settings'].get("logfile", "Log.txt")
         config['GUI']['always_on_top'] = config['GUI'].get("always_on_top", "no")
+        config['GUI']['font_size'] = config['GUI'].get("font_size", "9")
     else:
         config = write_new_config(configfile)
     return config
@@ -67,6 +68,7 @@ def write_new_config(file):
     gui['alpha'] = '0.7'
     gui['borderless'] = 'no'
     gui['always_on_top'] = 'yes'
+    gui['font_size'] = '9'
     expansions = sorted(zones.keys())
     for expansion in expansions:
         sorted_zones = sorted(zones[expansion].items(), key=lambda x: x[1])
@@ -172,6 +174,7 @@ def outputloop(zone_id, serverlocation, url, unstable_events, voice, language, z
     eventlist = []
     eventtimestamp = 0
     text = ""
+    previous_event = ""
     if serverlocation == "log" or lfm != "no":
         guioutput = " Use /log in Rift to start tracking."
         v.set(guioutput)
@@ -187,6 +190,7 @@ def outputloop(zone_id, serverlocation, url, unstable_events, voice, language, z
             line = logtext.readline()  # read new line
             line = line.strip()
             low_line = line.lower()
+            lfm_zone = ""
             try:
                 low_line = low_line.split("]: ")[1]
             except:
@@ -199,6 +203,7 @@ def outputloop(zone_id, serverlocation, url, unstable_events, voice, language, z
                 if lfm != "no":
                     if "lfm" in low_line or "lf1m" in low_line or "lf2m" in low_line  or "lf3m" in low_line or "lf4m" in low_line or  "lf5m" in low_line or "/10" in low_line or "/20" in low_line:
                         found = False
+                        print(low_line)
                         for trigger in lfm_trigger:
                             if "," in trigger[1]:
                                 triggers = trigger[1].split(",")
@@ -214,7 +219,7 @@ def outputloop(zone_id, serverlocation, url, unstable_events, voice, language, z
                                     break
                         if found:
                             found = False
-                            # print (line)
+                            print (low_line)
                             try:
                                 player_name = line.split("][")[1]
                                 player_name = player_name.split("]:")[0]
@@ -329,6 +334,7 @@ def close():
     config['GUI']['height'] = (str(root.winfo_height()))
     config["GUI"]['borderless'] = borderless
     config['GUI']['always_on_top'] = config_var['GUI']['always_on_top']
+    config['GUI']['font_size'] = config['GUI'].get("font_size", "9")
     expansions = sorted(zones.keys())
     for expansion in expansions:
         sorted_zones = sorted(zones[expansion].items(), key=lambda x: x[1])
@@ -574,7 +580,7 @@ root.geometry("+" + config_var['GUI']['x'] + "+" + config_var['GUI']['y'])
 root.bind("<Button-1>", leftclick)
 test = root.bind("<Button-3>", rightclick)
 v = StringVar()
-Label(root, textvariable=v, anchor=NW, justify=LEFT, width=config_var['GUI']['width'],
+Label(root, textvariable=v, anchor=NW, justify=LEFT, font=(None, config_var['GUI']['font_size']), width=config_var['GUI']['width'],
       height=config_var['GUI']['height'], bg=config_var['GUI']['background'], fg=config_var['GUI']['foreground']).pack()
 v.set("loading data ...")
 root.protocol("WM_DELETE_WINDOW", close)
