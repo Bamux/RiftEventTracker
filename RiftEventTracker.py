@@ -14,7 +14,7 @@ from tkinter import *
 import codecs
 import subprocess
 
-version = "0.8.2"
+version = "0.8.3"
 
 def read_config(file):
     if os.path.isfile(file):
@@ -284,21 +284,27 @@ def outputloop(zone_id, serverlocation, url, unstable_events, voice, language, z
                                 del item
                 if lfm != "only" and serverlocation != "log" and timestamp - eventtimestamp > 15:
                     eventtimestamp = timestamp
-                    eventlist = web_api(zone_id, serverlocation, url, unstable_events, voice, language, zonenames, lfm,
-                                        first_run, eventlist)
-                    first_run = False
+                    try:
+                        eventlist = web_api(zone_id, serverlocation, url, unstable_events, voice, language, zonenames, lfm,
+                                            first_run, eventlist)
+                        first_run = False
+                    except:
+                        serverlocation = "log"
                 lofile_output(serverlocation, data_output, eventlist, zonenames, language, running_log)
                 time.sleep(1)  # waiting for a new input
         else:
-            eventlist = web_api(zone_id, serverlocation, url, unstable_events, voice, language, zonenames, lfm,
-                                first_run, eventlist)
-            running_log = True
-            if eventlist:
-                lofile_output(serverlocation, data_output, eventlist, zonenames, language, running_log)
-            else:
-                v.set(" No event running")
-            first_run = False
-            time.sleep(15)
+            try:
+                eventlist = web_api(zone_id, serverlocation, url, unstable_events, voice, language, zonenames, lfm,
+                                    first_run, eventlist)
+                running_log = True
+                if eventlist:
+                    lofile_output(serverlocation, data_output, eventlist, zonenames, language, running_log)
+                else:
+                    v.set(" No event running")
+                first_run = False
+                time.sleep(15)
+            except:
+                serverlocation = "log"
 
 
 
