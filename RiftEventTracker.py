@@ -49,7 +49,7 @@ def write_new_config(file):
     config = configparser.ConfigParser()
     config['Settings'] = {}
     settings = config['Settings']
-    settings['serverlocation'] = 'eu'
+    settings['serverlocation'] = 'us'
     settings['language'] = 'eng'
     settings['voice'] = 'yes'
     settings['volume'] = '100'
@@ -184,6 +184,8 @@ def outputloop(zone_id, serverlocation, url, unstable_events, voice, language, z
         shardname = ""
         previous_event = []
     while True:
+        if not logtext:
+            logtext = logfilecheck()
         if serverlocation == "log" or lfm != "no":
             line = ""
             log = ""
@@ -287,9 +289,10 @@ def outputloop(zone_id, serverlocation, url, unstable_events, voice, language, z
                     try:
                         eventlist = web_api(zone_id, serverlocation, url, unstable_events, voice, language, zonenames, lfm,
                                             first_run, eventlist)
-                        first_run = False
                     except:
+                        print("fehler")
                         serverlocation = "log"
+                    first_run = False
                 lofile_output(serverlocation, data_output, eventlist, zonenames, language, running_log)
                 time.sleep(1)  # waiting for a new input
         else:
@@ -305,6 +308,8 @@ def outputloop(zone_id, serverlocation, url, unstable_events, voice, language, z
                 time.sleep(15)
             except:
                 serverlocation = "log"
+                logtext = logfilecheck()
+                logtext.seek(0, 2)  # jumps to the end of the Log.txt
 
 
 
@@ -379,30 +384,29 @@ def logfilecheck():
     log_exists = False
     log_file = ""
     logtext = ""
-    try:
-        if os.path.isfile(os.path.expanduser(config_var['Settings']['logfile'])):
-            log_file = os.path.expanduser(config_var['Settings']['logfile'])
-            log_exists = True
-        elif os.path.isfile(os.path.expanduser('~\Documents\RIFT\Log.txt')):
-            log_file = os.path.expanduser('~\Documents\RIFT\Log.txt')
-            log_exists = True
-        elif os.path.isfile('C:\Program Files (x86)\RIFT Game\Log.txt'):
-            log_file = 'C:\Program Files (x86)\RIFT Game\Log.txt'
-            log_exists = True
-        elif os.path.isfile('C:\Programs\RIFT~1\Log.txt'):
-            log_file = 'C:\Programs\RIFT~1\Log.txt'
-            log_exists = True
-        elif os.path.isfile('D:\Documents\RIFT\Log.txt'):
-            log_file = 'D:\Documents\RIFT\Log.txt'
-            log_exists = True
-        elif os.path.isfile('D:\Dokumente\RIFT\Log.txt'):
-            log_file = 'D:\Dokumente\RIFT\Log.txt'
-            log_exists = True
-        if log_exists:
-            config_var['Settings']['logfile'] = log_file
-            logtext = codecs.open(log_file, 'r', "utf-8")
-            return logtext
-    except:
+    if os.path.isfile(os.path.expanduser(config_var['Settings']['logfile'])):
+        log_file = os.path.expanduser(config_var['Settings']['logfile'])
+        log_exists = True
+    elif os.path.isfile(os.path.expanduser('~\Documents\RIFT\Log.txt')):
+        log_file = os.path.expanduser('~\Documents\RIFT\Log.txt')
+        log_exists = True
+    elif os.path.isfile('C:\Program Files (x86)\RIFT Game\Log.txt'):
+        log_file = 'C:\Program Files (x86)\RIFT Game\Log.txt'
+        log_exists = True
+    elif os.path.isfile('C:\Programs\RIFT~1\Log.txt'):
+        log_file = 'C:\Programs\RIFT~1\Log.txt'
+        log_exists = True
+    elif os.path.isfile('C:\Documents\RIFT\Log.txt'):
+        log_file = 'C:\Documents\RIFT\Log.txt'
+        log_exists = True
+    elif os.path.isfile('C:\Dokumente\RIFT\Log.txt'):
+        log_file = 'C:\Dokumente\RIFT\Log.txt'
+        log_exists = True
+    if log_exists:
+        config_var['Settings']['logfile'] = log_file
+        logtext = open(log_file, 'r', encoding="utf-8-sig")
+        return logtext
+    else:
         guioutput = "Couldn't find the logfile.\nPlease use /log in Rift to create a logfile."
         v.set(guioutput)
         time.sleep(5)
