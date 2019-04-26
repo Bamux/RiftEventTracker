@@ -14,12 +14,12 @@ from tkinter import *
 import codecs
 import subprocess
 
-version = "0.8.2"
+version = "0.8.3"
 
 def read_config(file):
     if os.path.isfile(file):
         config = configparser.ConfigParser()
-        config.read(configfile)
+        config.read(configfile, encoding="utf-8-sig")
         if int(config['Settings']['volume']) > 100:
             config['Settings']['volume'] = "100"
         elif int(config['Settings']['volume']) < 0:
@@ -49,7 +49,7 @@ def write_new_config(file):
     config = configparser.ConfigParser()
     config['Settings'] = {}
     settings = config['Settings']
-    settings['serverlocation'] = 'eu'
+    settings['serverlocation'] = 'us'
     settings['language'] = 'eng'
     settings['voice'] = 'yes'
     settings['volume'] = '100'
@@ -75,7 +75,7 @@ def write_new_config(file):
         config[expansion] = {}
         for zone in sorted_zones:
             config[expansion][str(zone[0])] = str(zone[1])
-    with open(file, 'w') as file:
+    with open(file, 'w', encoding="utf-8") as file:
         config.write(file)
     return config
 
@@ -184,9 +184,12 @@ def outputloop(zone_id, serverlocation, url, unstable_events, voice, language, z
         shardname = ""
         previous_event = []
     while True:
+        if not logtext:
+            logtext = logfilecheck()
         if serverlocation == "log" or lfm != "no":
             line = ""
             log = ""
+            logtext.seek(0,1)  # reset EOF status on some python versions
             line = logtext.readline()  # read new line
             line = line.strip()
             low_line = line.lower()
@@ -234,11 +237,10 @@ def outputloop(zone_id, serverlocation, url, unstable_events, voice, language, z
                                     set_clipboard("/tell " + player_name + " +")
                             except:
                                 print("Error")
-                if lfm != "only" and serverlocation != "eu" and serverlocation !="us" and "[" in line and "]" in line and "!" in line:
-                    for shardname in shards[serverlocation].values():
-                        if shardname in line:
+                if lfm != "only" and serverlocation != "eu" and serverlocation != "us" and line[-1] == "!":
+                            shardname = line.split()[-1].split("!")[0]
                             for zone in zoneid.values():
-                                if zone in line:
+                                if "["+zone+"]" in line:
                                     condition = True
                                     if unstable_events == "no" or unstable_events == "only":
                                         if unstable_events == "only":
@@ -267,10 +269,9 @@ def outputloop(zone_id, serverlocation, url, unstable_events, voice, language, z
                                             elif config_var['Settings']['language'] == 'fr':
                                                 beginning = "Événement en"
                                                 end = "au"
-                                                text = beginning + " " + zone + " " + end + " " + shardname
+                                            text = beginning + " " + zone + " " + end + " " + shardname
                                             Thread(target=saytext, args=(text,)).start()
                                     break
-                            break
             else:
                 if data_output:
                     i = 0
@@ -284,21 +285,30 @@ def outputloop(zone_id, serverlocation, url, unstable_events, voice, language, z
                                 del item
                 if lfm != "only" and serverlocation != "log" and timestamp - eventtimestamp > 15:
                     eventtimestamp = timestamp
-                    eventlist = web_api(zone_id, serverlocation, url, unstable_events, voice, language, zonenames, lfm,
-                                        first_run, eventlist)
+                    try:
+                        eventlist = web_api(zone_id, serverlocation, url, unstable_events, voice, language, zonenames, lfm,
+                                            first_run, eventlist)
+                    except:
+                        print("fehler")
+                        serverlocation = "log"
                     first_run = False
                 lofile_output(serverlocation, data_output, eventlist, zonenames, language, running_log)
                 time.sleep(1)  # waiting for a new input
         else:
-            eventlist = web_api(zone_id, serverlocation, url, unstable_events, voice, language, zonenames, lfm,
-                                first_run, eventlist)
-            running_log = True
-            if eventlist:
-                lofile_output(serverlocation, data_output, eventlist, zonenames, language, running_log)
-            else:
-                v.set(" No event running")
-            first_run = False
-            time.sleep(15)
+            try:
+                eventlist = web_api(zone_id, serverlocation, url, unstable_events, voice, language, zonenames, lfm,
+                                    first_run, eventlist)
+                running_log = True
+                if eventlist:
+                    lofile_output(serverlocation, data_output, eventlist, zonenames, language, running_log)
+                else:
+                    v.set(" No event running")
+                first_run = False
+                time.sleep(15)
+            except:
+                serverlocation = "log"
+                logtext = logfilecheck()
+                logtext.seek(0, 2)  # jumps to the end of the Log.txt
 
 
 
@@ -323,7 +333,7 @@ def close():
     config = ""
     if os.path.isfile(configfile):
         config = configparser.ConfigParser()
-        config.read(configfile)
+        config.read(configfile, encoding="utf-8-sig")
     zones_id = zones_to_track(config)
     config['Settings']['lfm'] = config['Settings'].get("lfm", "no")
     config['Settings']['auto_update'] = config['Settings'].get("auto_update", "yes")
@@ -348,7 +358,7 @@ def close():
                 config[expansion][str(zone[0])] = str(zone[1])
             else:
                 config[expansion][";" + str(zone[0])] = str(zone[1])
-    with open(file, 'w') as file:
+    with open(file, 'w', encoding="utf-8") as file:
         config.write(file)
     root.destroy()
     os._exit(1)
@@ -373,34 +383,33 @@ def logfilecheck():
     log_exists = False
     log_file = ""
     logtext = ""
-    try:
-        if os.path.isfile(os.path.expanduser(config_var['Settings']['logfile'])):
-            log_file = os.path.expanduser(config_var['Settings']['logfile'])
-            log_exists = True
-        elif os.path.isfile(os.path.expanduser('~\Documents\RIFT\Log.txt')):
-            log_file = os.path.expanduser('~\Documents\RIFT\Log.txt')
-            log_exists = True
-        elif os.path.isfile('C:\Program Files (x86)\RIFT Game\Log.txt'):
-            log_file = 'C:\Program Files (x86)\RIFT Game\Log.txt'
-            log_exists = True
-        elif os.path.isfile('C:\Programs\RIFT~1\Log.txt'):
-            log_file = 'C:\Programs\RIFT~1\Log.txt'
-            log_exists = True
-        elif os.path.isfile('D:\Documents\RIFT\Log.txt'):
-            log_file = 'D:\Documents\RIFT\Log.txt'
-            log_exists = True
-        elif os.path.isfile('D:\Dokumente\RIFT\Log.txt'):
-            log_file = 'D:\Dokumente\RIFT\Log.txt'
-            log_exists = True
-        if log_exists:
-            config_var['Settings']['logfile'] = log_file
-            logtext = codecs.open(log_file, 'r', "utf-8")
-            return logtext
-    except:
+    if os.path.isfile(os.path.expanduser(config_var['Settings']['logfile'])):
+        log_file = os.path.expanduser(config_var['Settings']['logfile'])
+        log_exists = True
+    elif os.path.isfile(os.path.expanduser('~\Documents\RIFT\Log.txt')):
+        log_file = os.path.expanduser('~\Documents\RIFT\Log.txt')
+        log_exists = True
+    elif os.path.isfile('C:\Program Files (x86)\RIFT Game\Log.txt'):
+        log_file = 'C:\Program Files (x86)\RIFT Game\Log.txt'
+        log_exists = True
+    elif os.path.isfile('C:\Programs\RIFT~1\Log.txt'):
+        log_file = 'C:\Programs\RIFT~1\Log.txt'
+        log_exists = True
+    elif os.path.isfile('C:\Documents\RIFT\Log.txt'):
+        log_file = 'C:\Documents\RIFT\Log.txt'
+        log_exists = True
+    elif os.path.isfile('C:\Dokumente\RIFT\Log.txt'):
+        log_file = 'C:\Dokumente\RIFT\Log.txt'
+        log_exists = True
+    if log_exists:
+        config_var['Settings']['logfile'] = log_file
+        logtext = open(log_file, 'r', encoding="utf-8-sig")
+        return logtext
+    else:
         guioutput = "Couldn't find the logfile.\nPlease use /log in Rift to create a logfile."
         v.set(guioutput)
         time.sleep(5)
-        logfilecheck()
+        return logfilecheck()
 
 
 def lofile_output(serverlocation, data_output, eventlist, zonenames, language, running_log):
@@ -556,7 +565,7 @@ shards = {
 
 configfile = "config.ini"
 config_var = read_config(configfile)
-if config_var['Settings']['serverlocation'] != 'eu' and config_var['Settings']['serverlocation'] != 'prime':
+if config_var['Settings']['serverlocation'] not in ("eu", "prime", "log"):
     config_var['Settings']['serverlocation'] = 'us'
 zone_names = eventnames(config_var['Settings']['serverlocation'])
 try:
