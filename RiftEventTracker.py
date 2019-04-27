@@ -14,21 +14,24 @@ from tkinter import *
 import codecs
 import subprocess
 
-version = "0.8.3"
+version = "0.8.4"
 
 def read_config(file):
     if os.path.isfile(file):
-        config = configparser.ConfigParser()
-        config.read(configfile)
-        if int(config['Settings']['volume']) > 100:
-            config['Settings']['volume'] = "100"
-        elif int(config['Settings']['volume']) < 0:
-            config['Settings']['volume'] = "0"
-        config['Settings']['lfm'] = config['Settings'].get("lfm", "no")
-        config['Settings']['auto_update'] = config['Settings'].get("auto_update", "yes")
-        config['Settings']['logfile'] = config['Settings'].get("logfile", "Log.txt")
-        config['GUI']['always_on_top'] = config['GUI'].get("always_on_top", "no")
-        config['GUI']['font_size'] = config['GUI'].get("font_size", "9")
+        try:
+            config = configparser.ConfigParser()
+            config.read(configfile, encoding="utf-8-sig")
+            if int(config['Settings']['volume']) > 100:
+                config['Settings']['volume'] = "100"
+            elif int(config['Settings']['volume']) < 0:
+                config['Settings']['volume'] = "0"
+            config['Settings']['lfm'] = config['Settings'].get("lfm", "no")
+            config['Settings']['auto_update'] = config['Settings'].get("auto_update", "yes")
+            config['Settings']['logfile'] = config['Settings'].get("logfile", "Log.txt")
+            config['GUI']['always_on_top'] = config['GUI'].get("always_on_top", "no")
+            config['GUI']['font_size'] = config['GUI'].get("font_size", "9")
+        except:
+            config = write_new_config(configfile)
     else:
         config = write_new_config(configfile)
     return config
