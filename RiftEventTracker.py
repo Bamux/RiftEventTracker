@@ -14,7 +14,7 @@ from tkinter import *
 import codecs
 import subprocess
 
-version = "0.8.5"
+version = "0.8.6"
 
 def read_config(file):
     if os.path.isfile(file):
@@ -178,6 +178,8 @@ def outputloop(zone_id, serverlocation, url, unstable_events, voice, language, z
     eventtimestamp = 0
     text = ""
     previous_event = ""
+    if serverlocation == "eu":
+        serverlocation = "log"
     if serverlocation == "log" or lfm != "no":
         guioutput = " Use /log in Rift to start tracking."
         v.set(guioutput)
@@ -196,6 +198,7 @@ def outputloop(zone_id, serverlocation, url, unstable_events, voice, language, z
             line = line.strip()
             low_line = line.lower()
             lfm_zone = ""
+            shardname = ""
             try:
                 low_line = low_line.split("]: ")[1]
             except:
@@ -293,7 +296,8 @@ def outputloop(zone_id, serverlocation, url, unstable_events, voice, language, z
                         eventlist = web_api(zone_id, serverlocation, url, unstable_events, voice, language, zonenames, lfm,
                                             first_run, eventlist)
                     except:
-                        print("fehler")
+                        v.set(" Web API not available.\n RiftEventTracker switches to logfile mode! Please wait ...")
+                        time.sleep(3)
                         serverlocation = "log"
                     first_run = False
                 lofile_output(serverlocation, data_output, eventlist, zonenames, language, running_log)
