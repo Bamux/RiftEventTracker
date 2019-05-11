@@ -14,7 +14,7 @@ from tkinter import *
 import codecs
 import subprocess
 
-version = "0.8.4"
+version = "0.8.5"
 
 def read_config(file):
     if os.path.isfile(file):
@@ -168,7 +168,7 @@ def web_api(zone_id, serverlocation, url, unstable_events, voice, language, zone
 
 def outputloop(zone_id, serverlocation, url, unstable_events, voice, language, zonenames, lfm):  # analyzes each new line in the Log.txt
     update()
-    v.set("loading data ...")
+    v.set("Loading data ...\nIt may take a few seconds to connect to the Web API.\nPlease wait ...")
     first_run = True
     logtext = ""
     running_log = False
@@ -310,6 +310,8 @@ def outputloop(zone_id, serverlocation, url, unstable_events, voice, language, z
                 first_run = False
                 time.sleep(15)
             except:
+                v.set(" Web API not available.\n RiftEventTracker switches to logfile mode!")
+                time.sleep(3)
                 serverlocation = "log"
                 logtext = logfilecheck()
                 logtext.seek(0, 2)  # jumps to the end of the Log.txt
