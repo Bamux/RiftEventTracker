@@ -39,7 +39,7 @@ def update():
         copyfile('update/RiftEventTracker-master/update.exe', '_update.exe')
         copyfile('update/RiftEventTracker-master/README.md', 'README.md')
         copyfile('update/RiftEventTracker-master/RiftEventTracker.exe', 'RiftEventTracker.exe')
-        copyfile('update/RiftEventTracker-master/eventnames.txt', 'eventnames.txt')
+        copyfile('update/RiftEventTracker-master/eventnames_element.txt', 'eventnames.txt')
 
         files = os.listdir("update/RiftEventTracker-master")
         for f in files:

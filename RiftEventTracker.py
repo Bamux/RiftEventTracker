@@ -14,7 +14,7 @@ from tkinter import *
 import codecs
 import subprocess
 
-version = "0.8.6"
+version = "0.8.7"
 
 def read_config(file):
     if os.path.isfile(file):
@@ -39,8 +39,8 @@ def read_config(file):
 
 def eventnames(serverlocation):
     event = []
-    if os.path.isfile("eventnames.txt"):
-        event_names = codecs.open("eventnames.txt", 'r', "utf-8")
+    if os.path.isfile("eventnames_element.txt"):
+        event_names = codecs.open("eventnames_element.txt", 'r', "utf-8")
         for item in event_names:
             item = item.strip()
             item = item.split(", ")
@@ -157,12 +157,6 @@ def web_api(zone_id, serverlocation, url, unstable_events, voice, language, zone
                         else:
                             text = beginning + " " + item[1] + " " + end + " " + item[2]
                         Thread(target=saytext, args=(text,)).start()
-    # else:
-    #     v.set(" No event running")
-    #     first_run = False
-    # if unavailable_servers == len(shards[serverlocation]):
-    #     logfile_analysis(serverlocation, unstable_events)
-    # print(events)
     return events
 
 
@@ -437,27 +431,73 @@ def lofile_output(serverlocation, data_output, eventlist, zonenames, language, r
                 if item[2] == "Brutwacht":
                     for name in zonenames:
                         if name[0] == item[3]:
-                            item[3] = name[1]
+                            if name[3] != "unknown":
+                                element = name[3]
+                                item[3] = name[1] + " (" + element + ")"
+                            else:
+                                item[3] = name[1]
+                            break
                 elif item[2] == "Brisesol":
                     for name in zonenames:
                         if name[2] == item[3]:
-                            item[3] = name[1]
+                            if name[3] != "unknown":
+                                element = name[3]
+                                item[3] = name[1] + " (" + element + ")"
+                            else:
+                                item[3] = name[1]
+                            break
+                else:
+                    for name in zonenames:
+                        if name[1] == item[3]:
+                            if name[3] != "unknown":
+                                element = name[3]
+                                item[3] = name[1] + " (" + element + ")"
+                            else:
+                                item[3] = name[1]
+                            break
             elif language == "ger":
                 for name in zonenames:
                     if item[2] == "Brisesol":
                         if name[2] == item[3]:
-                            item[3] = name[0]
+                            if name[3] != "unknown":
+                                element = name[3]
+                                item[3] = name[0] + " (" + element + ")"
+                            else:
+                                item[3] = name[0]
+                            break
                     else:
                         if name[1] == item[3]:
-                            item[3] = name[0]
+                            if name[3] != "unknown":
+                                element = name[3]
+                                item[3] = name[0] + " (" + element + ")"
+                            else:
+                                item[3] = name[0]
+                            break
             elif language == "fr":
                 for name in zonenames:
                     if item[2] == "Brutwacht":
                         if name[0] == item[3]:
-                            item[3] = name[2]
+                            if name[3] != "unknown":
+                                element = name[3]
+                                item[3] = name[2] + " (" + element + ")"
+                            else:
+                                item[3] = name[2]
+                            break
                     else:
                         if name[1] == item[3]:
-                            item[3] = name[2]
+                            if name[3] != "unknown":
+                                element = name[3]
+                                item[3] = name[2] + " (" + element + ")"
+                            else:
+                                item[3] = name[2]
+                            break
+        elif serverlocation == "log":
+            for name in zonenames:
+                if item[3] in name:
+                    if name[3] != "unknown":
+                        element = name[3]
+                        item[3] += " (" + element + ")"
+                        break
         if i < 15:
             i += 1
             m = int(math.floor((time.time() - item[0]) / 60))
