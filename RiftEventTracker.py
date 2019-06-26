@@ -14,7 +14,7 @@ from tkinter import *
 import codecs
 import subprocess
 
-version = "0.8.7"
+version = "0.8.8"
 
 def read_config(file):
     if os.path.isfile(file):
@@ -172,8 +172,8 @@ def outputloop(zone_id, serverlocation, url, unstable_events, voice, language, z
     eventtimestamp = 0
     text = ""
     previous_event = ""
-    if serverlocation == "eu":
-        serverlocation = "log"
+    # if serverlocation == "eu":
+    #     serverlocation = "log"
     if serverlocation == "log" or lfm != "no":
         guioutput = " Use /log in Rift to start tracking."
         v.set(guioutput)
@@ -183,9 +183,9 @@ def outputloop(zone_id, serverlocation, url, unstable_events, voice, language, z
         shardname = ""
         previous_event = []
     while True:
-        if not logtext:
-            logtext = logfilecheck()
         if serverlocation == "log" or lfm != "no":
+            if not logtext:
+                logtext = logfilecheck()
             line = ""
             log = ""
             line = logtext.readline()  # read new line
