@@ -1,0 +1,288 @@
+﻿body{
+	background-color: #2b3e50;
+	text-shadow: 0px 0px 1px #000000;
+}
+
+.content{
+	margin:5px 10px 10px 10px;
+	display:flex;
+  	flex-wrap: wrap;
+  	justify-content: center;
+}
+
+.dropdown-menu.show {
+	background-color:black;
+	color:white;
+}
+
+.dropdown-menu.show a{
+	color:white;
+}
+
+.dropdown-item:focus, .dropdown-item:hover{
+	background-color:#555758;
+}
+.subheading{
+	padding-left:25px;
+	color:#fff;
+	text-align:left;
+	padding-right:25px;
+	width:100%;
+}
+
+.video_win{
+	width:25%;
+	border:1px solid #000;
+	float:left;
+	color:white;
+	background-color:#212529;
+	white-space: nowrap; 
+  	overflow: hidden;
+  	text-overflow: ellipsis;
+	margin:.5rem;
+}
+
+.video_win ul{
+	margin-top:1rem;
+	list-style:none;
+	padding-left: 2px;
+}
+
+table{
+	text-overflow: ellipsis;
+        white-space: nowrap;
+}
+
+hr{
+	border: 0.5px solid white;
+  	border-radius: 1px;
+	margin-block-start: .3em !important;
+	margin-bottom:0px;
+}
+
+h1{
+	font-size:14px;
+	color:white;
+	padding-top:.7rem
+}
+
+h2{
+	font-size:18px;
+}
+
+.left-align{
+	display:block;
+	justify-content:left;
+}
+
+.content p{
+	color:white;
+}
+
+.navbar{
+	padding:.1rem;
+	position: sticky;
+        top: 0px;
+	z-index:1;
+}
+
+.nav-link{
+	padding:.1rem;
+	font-size:.8rem;
+}
+
+/* dps template */
+
+.pt_table_blank{
+	width:360px;
+	margin:5px 5px 5px 5px;
+	float:left;
+	font-size:.80rem;
+}
+
+.pt_table_blank td:nth-child(1){
+ 	width:40px;
+}
+
+.pt_table_blank td:nth-child(2){
+ 	width:185px;
+}
+
+.pt_table_blank td:nth-child(3){
+ 	width:90px;
+}
+
+.pt_table_blank td:nth-child(4){
+ 	width:70px;
+}
+
+.pt_table_blank th:nth-child(4){
+	padding-right:10px;
+}
+
+/* end dps template */
+
+/* leaders template */
+
+.pt_table_fastest_kill{
+	width:360px;
+	margin:5px 5px 5px 5px;
+	float:left;
+	font-size:.80rem;
+}
+
+
+
+.pt_table_blank_leader{
+	width:360px;
+	margin:5px 5px 5px 5px;
+	float:left;
+	font-size:.80rem;
+}
+
+.pt_table_blank_leader th:nth-child(1){
+ 	width:90px;
+	
+}
+
+.pt_table_blank_leader th:nth-child(2){
+ 	width:130px;
+	
+	
+}
+
+/* end leaders template */
+
+/*leader dps templat*/
+
+.pt_table_blank_leader_dps{
+	width:360px;
+	margin:5px 5px 5px 5px;
+	float:left;
+	font-size:.80rem;
+}
+
+
+.pt_table_blank_leader_dps th:nth-child(1){
+ 	width:100px;
+	
+/*	padding:5px; */
+}
+
+.pt_table_blank_leader_dps th:nth-child(2){
+ 	width:140px;
+	
+	padding:3px;
+}
+
+/* end leader dps template */
+
+.pt_table_blank_hps{
+	width:550px;
+	margin:5px 5px 5px 5px;
+	float:left;
+	font-size:.80rem;
+        overflow-x: auto;
+	text-overflow: ellipsis;
+        white-space: nowrap;
+}
+
+.pt_table_blank_hps th:nth-child(2){
+  /*   */
+ 	width:110px;
+}
+
+.pt_table_blank_large{
+	width:100%;
+	margin:5px 5px 5px 5px;
+	float:left;
+	font-size:.70rem;
+
+}
+
+.pt_table_blank_mostplayed{
+	width:100%;
+	margin:5px 5px 5px 5px;
+	float:left;
+	font-size:.80rem;
+}
+
+.pt_table_blank_mostplayed th:nth-child(1){
+    
+ 	width:90px;
+}
+
+.pt_table_blank_latestuploads{
+	width:100%;
+	margin:5px 5px 5px 5px;
+	float:left;
+	font-size:.80rem;
+}
+
+/* mostplayed and latestuploads sticky tabletop*/
+.pt_table_blank_latestuploads thead th{
+    position: sticky;
+        top: 0px;
+    background-color:#000;
+}
+
+.pt_table_blank_mostplayed thead th{
+    position: sticky;
+        top: 0px;
+    background-color:#000;
+}
+/* adjust table size here */
+
+.table td, .table th {
+    padding: .3rem .4rem .3rem .8rem
+
+}
+
+/* table border colors
+
+.table-dark td, .table-dark th, .table-dark thead th {
+    border-color: rgba(0, 0, 0, 0.40);
+} */
+
+.clearfloat{
+	clear:both;
+}
+
+.navbar{
+	background-color:#000;
+}
+
+.navbar{
+    padding:.1rem;
+    position: sticky;
+        top: 0px;
+}
+
+.Cleric {background-color: green !important;}
+.Warrior {background-color:#CC0000!important;}
+.Primalist {background-color:#0b5394 !important;}
+.Rogue {background-color:#c09a27!important;}
+.Mage {background-color:purple !important;}
+.ttkguild {background-color:black !important; font-weight:bold;}
+.ctotal {background-color:black !important; font-weight:bold;}
+
+.hidden{
+	display:none;
+}
+
+@media only screen and (max-width: 1000px) {
+  .content {
+	display: inline-block;
+	width:90%;
+  }
+}
+/*
+@media only screen and (max-width: 1000px) {
+.pt_table_fastest_kill{
+	width:auto; !important;
+	min-width:360px;
+	display:table;
+	padding: .3rem .4rem .3rem .8rem;
+	
+}}/*
+
