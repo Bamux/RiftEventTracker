@@ -6,7 +6,7 @@ Download latest Version: https://github.com/Bamux/RiftEventTracker/archive/maste
 Features:
 - text to speach announcement of events (zone and server) and lfm raids/experts
 - overlay display of running events and lfm raids/experts
-- with strg + v you can quickly answer a player who is looking for other players with lfm
+- with ctrl + v or strg + v you can quickly answer a player who is looking for other players with lfm
 
 ## Instructions:
 - start RiftEventTracker.exe
