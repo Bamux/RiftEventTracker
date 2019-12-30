@@ -2,6 +2,6 @@
 Raid Rift = rr, raid rift
 Rise of the Phoenix = rotp
 Tartaric Depths normal = td nm, tdnm
-Tartaric Depths easy =  td ez,  td easy, td em
+Tartaric Depths easy =  td ez, td easy, td em
 Crafting Rift = crafting rift
 Queens Foci = qf
