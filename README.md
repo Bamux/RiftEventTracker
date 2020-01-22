@@ -1,4 +1,4 @@
-## Rift Event Tracker 0.8.8
+## Rift Event Tracker 0.8.9
 ![Overlay](https://cdn.discordapp.com/attachments/374932500910309379/422081814950313984/unknown.png)
 
 Download latest Version: https://github.com/Bamux/RiftEventTracker/archive/master.zip
@@ -6,7 +6,7 @@ Download latest Version: https://github.com/Bamux/RiftEventTracker/archive/maste
 Features:
 - text to speach announcement of events (zone and server) and lfm raids/experts
 - overlay display of running events and lfm raids/experts
-- with ctrl + v or strg + v you can quickly answer a player who is looking for other players with lfm
+- with strg + v you can quickly answer a player who is looking for other players with lfm
 
 ## Instructions:
 - start RiftEventTracker.exe

@@ -78,7 +78,7 @@ def write_new_config(file):
         config[expansion] = {}
         for zone in sorted_zones:
             config[expansion][str(zone[0])] = str(zone[1])
-    with open(file, 'w') as file:
+    with open(file, 'w', encoding="utf-8") as file:
         config.write(file)
     return config
 
@@ -188,6 +188,7 @@ def outputloop(zone_id, serverlocation, url, unstable_events, voice, language, z
                 logtext = logfilecheck()
             line = ""
             log = ""
+            logtext.seek(0,1)  # reset EOF status on some python versions
             line = logtext.readline()  # read new line
             line = line.strip()
             low_line = line.lower()
@@ -236,11 +237,15 @@ def outputloop(zone_id, serverlocation, url, unstable_events, voice, language, z
                                     set_clipboard("/tell " + player_name + " +")
                             except:
                                 print("Error")
-                if lfm != "only" and serverlocation != "eu" and serverlocation !="us" and "[" in line and "]" in line and "!" in line:
-                    for shardname in shards[serverlocation].values():
-                        if shardname in line:
+                if lfm != "only" and serverlocation != "eu" and serverlocation != "us" and line[-1] == "!":
+                            if language == "fr":
+                                if "serveur " in line:
+                                    shardname = line.split("serveur ")[1]
+                                    shardname = shardname.split()[0]
+                            else:
+                                shardname = line.split()[-1].split("!")[0]
                             for zone in zoneid.values():
-                                if zone in line:
+                                if "["+zone+"]" in line:
                                     condition = True
                                     if unstable_events == "no" or unstable_events == "only":
                                         if unstable_events == "only":
@@ -269,10 +274,9 @@ def outputloop(zone_id, serverlocation, url, unstable_events, voice, language, z
                                             elif config_var['Settings']['language'] == 'fr':
                                                 beginning = "Événement en"
                                                 end = "au"
-                                                text = beginning + " " + zone + " " + end + " " + shardname
+                                            text = beginning + " " + zone + " " + end + " " + shardname
                                             Thread(target=saytext, args=(text,)).start()
                                     break
-                            break
             else:
                 if data_output:
                     i = 0
@@ -337,7 +341,7 @@ def close():
     config = ""
     if os.path.isfile(configfile):
         config = configparser.ConfigParser()
-        config.read(configfile)
+        config.read(configfile, encoding="utf-8-sig")
     zones_id = zones_to_track(config)
     config['Settings']['lfm'] = config['Settings'].get("lfm", "no")
     config['Settings']['auto_update'] = config['Settings'].get("auto_update", "yes")
@@ -362,7 +366,7 @@ def close():
                 config[expansion][str(zone[0])] = str(zone[1])
             else:
                 config[expansion][";" + str(zone[0])] = str(zone[1])
-    with open(file, 'w') as file:
+    with open(file, 'w', encoding="utf-8") as file:
         config.write(file)
     root.destroy()
     os._exit(1)
@@ -492,12 +496,13 @@ def lofile_output(serverlocation, data_output, eventlist, zonenames, language, r
                                 item[3] = name[2]
                             break
         elif serverlocation == "log":
-            for name in zonenames:
-                if item[3] in name:
-                    if name[3] != "unknown":
-                        element = name[3]
-                        item[3] += " (" + element + ")"
-                        break
+            if len(item) > 3:
+                for name in zonenames:
+                    if item[3] in name:
+                        if name[3] != "unknown":
+                            element = name[3]
+                            item[3] += " (" + element + ")"
+                            break
         if i < 15:
             i += 1
             m = int(math.floor((time.time() - item[0]) / 60))
@@ -615,7 +620,7 @@ shards = {
 
 configfile = "config.ini"
 config_var = read_config(configfile)
-if config_var['Settings']['serverlocation'] != 'eu' and config_var['Settings']['serverlocation'] != 'prime':
+if config_var['Settings']['serverlocation'] not in ("eu", "prime", "log"):
     config_var['Settings']['serverlocation'] = 'us'
 zone_names = eventnames(config_var['Settings']['serverlocation'])
 try:
