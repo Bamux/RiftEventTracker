@@ -14,7 +14,7 @@ from tkinter import *
 import codecs
 import subprocess
 
-version = "0.8.8"
+version = "0.8.9"
 
 def read_config(file):
     if os.path.isfile(file):
