@@ -14,7 +14,7 @@ from tkinter import *
 import codecs
 import subprocess
 
-version = "0.8.9"
+version = "0.9.0"
 
 def read_config(file):
     if os.path.isfile(file):
@@ -568,13 +568,13 @@ zones = {
     },
     'Storm Legion': {
         1446819710: 'Ardent Domain, Eiferer-Reich, Contrée Ardente',
-        790513416: 'Ashora',
+        790513416: 'Ashora, Ashora, Ashora',
         1213399942: "Eastern Holdings, Östliche Besitztümer, Fiefs de l'Orient",
         1770829751: 'Cape Jule, Kap Jul, Cap Yule',
         1967477725: 'City Core, Stadtkern, Cœur de la Cité',
         479431687: 'Kingdom of Pelladane, Königreich Pelladane, Royaume de Pelladane',
         1300766935: 'Kingsward, Königszirkel, Protectorat du Roi',
-        956914599: 'Morban',
+        956914599: 'Morban, Morban, Morban',
         282584906: 'The Dendrome, Das Dendrom, The Dendrome',
         1494372221: 'Seratos, Seratos, Serratos',
         798793247: "Steppes of Infinity, Steppen der Unendlichkeit, Steppes de l'Infini",
