@@ -14,7 +14,7 @@ from tkinter import *
 import codecs
 import subprocess
 
-version = "0.9.0"
+version = "0.9.1"
 
 def read_config(file):
     if os.path.isfile(file):
@@ -204,7 +204,7 @@ def outputloop(zone_id, serverlocation, url, unstable_events, voice, language, z
                     running_log = True
                     v.set(" Logfile found. Search for events started.")
                 if lfm != "no":
-                    if "lfm" in low_line or "lf1m" in low_line or "lf2m" in low_line  or "lf3m" in low_line or "lf4m" in low_line or  "lf5m" in low_line or "/10" in low_line or "/20" in low_line:
+                    if "lf" in low_line or "/10" in low_line or "/20" in low_line:
                         found = False
                         print(low_line)
                         for trigger in lfm_trigger:

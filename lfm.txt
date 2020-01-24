@@ -3,5 +3,6 @@ Raid Rift = rr, raid rift
 Rise of the Phoenix = rotp
 Tartaric Depths normal = td nm, tdnm
 Tartaric Depths easy =  td ez,  td easy, td em, tdem
-Crafting Rift = crafting rift
+Crafting Rift = crafting rift, crift
 Queens Foci = qf
+Enclave of Ahnket = eoa
