@@ -204,7 +204,7 @@ def outputloop(zone_id, serverlocation, url, unstable_events, voice, language, z
                     running_log = True
                     v.set(" Logfile found. Search for events started.")
                 if lfm != "no":
-                    if "lf" in low_line or "/10" in low_line or "/20" in low_line:
+                    if "lf" in low_line or "looking" in low_line or "/10" in low_line or "/10" in low_line or "/20" in low_line:
                         found = False
                         print(low_line)
                         for trigger in lfm_trigger:
