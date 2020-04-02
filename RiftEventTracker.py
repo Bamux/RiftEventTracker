@@ -14,7 +14,8 @@ from tkinter import *
 import codecs
 import subprocess
 
-version = "0.9.1"
+version = "0.9.2"
+
 
 def read_config(file):
     if os.path.isfile(file):
@@ -160,7 +161,7 @@ def web_api(zone_id, serverlocation, url, unstable_events, voice, language, zone
     return events
 
 
-def outputloop(zone_id, serverlocation, url, unstable_events, voice, language, zonenames, lfm):  # analyzes each new line in the Log.txt
+def outputloop(zone_id, serverlocation, url, unstable_events, voice, language, zonenames, lfm):
     update()
     v.set("Loading data ...\nIt may take a few seconds to connect to the Web API.\nPlease wait ...")
     first_run = True
@@ -172,8 +173,7 @@ def outputloop(zone_id, serverlocation, url, unstable_events, voice, language, z
     eventtimestamp = 0
     text = ""
     previous_event = ""
-    # if serverlocation == "eu":
-    #     serverlocation = "log"
+    serverlocation = "log"
     if serverlocation == "log" or lfm != "no":
         guioutput = " Use /log in Rift to start tracking."
         v.set(guioutput)
@@ -242,6 +242,10 @@ def outputloop(zone_id, serverlocation, url, unstable_events, voice, language, z
                                 if "serveur " in line:
                                     shardname = line.split("serveur ")[1]
                                     shardname = shardname.split()[0]
+                            elif language == "ger":
+                                if " begonnen!" in line and " hat auf " in line:
+                                    shardname = line.split(" begonnen!")[0]
+                                    shardname = shardname.split(" hat auf ")[1]
                             else:
                                 shardname = line.split()[-1].split("!")[0]
                             for zone in zoneid.values():
@@ -414,7 +418,8 @@ def logfilecheck():
         logtext = open(log_file, 'r', encoding="utf-8-sig")
         return logtext
     else:
-        guioutput = "Couldn't find the logfile.\nPlease use /log in Rift to create a logfile."
+        guioutput = "Couldn't find the logfile.\nPlease use /log in Rift to create a logfile." \
+                    "\nThen restart the Event Tracker."
         v.set(guioutput)
         time.sleep(5)
         logfilecheck()
@@ -423,14 +428,15 @@ def logfilecheck():
 def lofile_output(serverlocation, data_output, eventlist, zonenames, language, running_log):
     guioutput = ""
     if not running_log:
-        guioutput = " Use /log in Rift to search for lfm. In the lfm.txt you can specify what you want to search for\n\n"
+        guioutput = " Use /log in Rift to search for lfm. In the lfm.txt you " \
+                    "can specify what you want to search for\n\n"
     data_output = data_output + eventlist
     data_output.sort(reverse=True)
     i = 0
     timestamp = int(math.floor(time.time()))
     # print(data_output)
     for item in data_output:
-        if  serverlocation == "us" or serverlocation == "eu":
+        if serverlocation == "us" or serverlocation == "eu":
             if language == "eng":
                 if item[2] == "Brutwacht":
                     for name in zonenames:
