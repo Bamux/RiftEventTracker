@@ -1,1 +1,0 @@
-L:\Python38-32/Scripts/pyinstaller --onefile --noconsole  RiftEventTracker.py --distpath L:\Projects_2020\RiftEventTracker --workpath L:\pyinstaller --name RiftEventTracker --specpath L:\pyinstaller
