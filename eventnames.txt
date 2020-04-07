@@ -9,7 +9,7 @@ Die Hexenstunde, The Witching Hour, L\'heure de la sorcière, life
 Ein Sturm zieht auf, Storm Rising, La Tempête gronde (Legacy), unknown
 Gier erfüllt die Schlucht, Greed in the Gorge, Cupidité dans les Gorges, earth
 Visionen einer vergangenen Zukunft, Visions of Future Past, Visions du futur révolu, death
-Güldenglut, Golden Embers, Braises dorées, fi
+Güldenglut, Golden Embers, Braises dorées, fire
 Aus der Grube, From the Pit, De la Fosse, fire
 Wüstenwind, Desert Wind, Le Vent du désert, air
 Scharmützel im Moor, Skirmish in the Moor, Escarmouche à Mornelande, unknown
@@ -21,10 +21,10 @@ Die Ebbe des Flutenfürsten, The Ebb of the Tidelord, Le flux des Seigneurs des 
 Sand-Verehrung, Sand Worship, Vénérer le sable, earth
 Wogen des Wahnsinns, Waves of Madness, Vagues de folie, water
 Kain erhebt sich, Raising Kain, L\'élévation de Kain, death
-Höllisches Erwachen, Infernal Awakening, Éveil infernal, fi
+Höllisches Erwachen, Infernal Awakening, Éveil infernal, fire
 Systematische Zerstörung, Systematic Deconstruction, Déconstruction systématique, earth
 Inselsturm, Island Storm, Orage insulaire, air
-Hammer und Flamme, Hammer and Flame, Marteau et flamme, fi
+Hammer und Flamme, Hammer and Flame, Marteau et flamme, fire
 Schlurferhorden, Shambling Hordes, Hordes peu vivaces, death
 Feuer des Leidens, Fires of Suffering, Feux de la souffrance, fire
 Scharmützel im Sand, Skirmish in the Sands, Escarmouche des sables, unknown
@@ -58,7 +58,7 @@ Rückkehr der Gefallenen, Return Of The Fallen, Le retour des déchus, death
 Armee des Windes, Army of the Wind, L\'Armée du Vent, air
 Schlacht der Waldlande, Battle of the Woodlands, La bataille des bois, life
 Fleischungetüm, Flesh Monstrosity, Monstruosité de chair, death
-Unwahrscheinliche Bündnisse, Unlikely Alliances, Alliances improbables, fi
+Unwahrscheinliche Bündnisse, Unlikely Alliances, Alliances improbables, fire
 Auf der Jagd, On the Hunt, En chasse, life
 Seelensammlung, Gathering of Souls, Rassemblement d’âmes, death
 Schlangen-Sturm, Serpent Storm, Le serpent de la Tempête, air
