@@ -14,9 +14,10 @@ Features:
 - with left mouse click on the Rift Event Tracker window you can start/end the borderless modus
 - with right mouse click you can close the window
 - if you want to use the overlay display in Rift you have to use Rift in the Fullscreen Windowed Mode
-- after you use the program for the first time, set your client language and if you are playing on the eu or the na server, close the program and make the changes in config.ini. more information on this can be found in the following section
 
-![Rift Settings](https://cdn.discordapp.com/attachments/374932500910309379/422085099841126400/unknown.png)
+![Rift Settings](https://cdn.discordapp.com/attachments/374932500910309379/422085099841126400/unknown.png
+
+- after you use the program for the first time, set your client language and if you are playing on the eu or the na server, close the program and make the changes in config.ini. more information on this can be found in the following section
 
 ## Configuration:
 - after the first start a configuration file is created in the same folder
