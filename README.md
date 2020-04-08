@@ -9,6 +9,7 @@ Features:
 - with strg + v you can quickly answer a player who is looking for other players with lfm
 
 ## Instructions:
+- start Rift and write /log in your chat window, Rift then creates a log.txt in your Documents/Rift folder
 - start RiftEventTracker.exe
 - with left mouse click on the Rift Event Tracker window you can start/end the borderless modus
 - with right mouse click you can close the window
