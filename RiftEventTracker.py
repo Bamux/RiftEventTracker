@@ -40,8 +40,8 @@ def read_config(file):
 
 def eventnames(serverlocation):
     event = []
-    if os.path.isfile("eventnames_element.txt"):
-        event_names = codecs.open("eventnames_element.txt", 'r', "utf-8")
+    if os.path.isfile("eventnames.txt"):
+        event_names = codecs.open("eventnames.txt", 'r', "utf-8")
         for item in event_names:
             item = item.strip()
             item = item.split(", ")
