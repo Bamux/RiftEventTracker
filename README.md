@@ -1,4 +1,4 @@
-## Rift Event Tracker 0.9.3
+## Rift Event Tracker 0.9.4
 ![Overlay](https://cdn.discordapp.com/attachments/374932500910309379/422081814950313984/unknown.png)
 
 Download latest Version: https://github.com/Bamux/RiftEventTracker/archive/master.zip
@@ -15,7 +15,7 @@ Features:
 - with right mouse click you can close the window
 - if you want to use the overlay display in Rift you have to use Rift in the Fullscreen Windowed Mode
 
-![Rift Settings](https://cdn.discordapp.com/attachments/374932500910309379/422085099841126400/unknown.png
+![Rift Settings](https://cdn.discordapp.com/attachments/374932500910309379/422085099841126400/unknown.png)
 
 - after you use the program for the first time, set your client language and if you are playing on the eu or the na server, for this close the program and make the changes in config.ini. more information on this can be found in the following section
 
