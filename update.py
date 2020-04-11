@@ -1,9 +1,10 @@
-import requests, zipfile
+import requests
+import zipfile
 import shutil
 from shutil import copyfile
 from clint.textui import progress
 import os
-import time, sys
+import time
 import psutil
 import subprocess
 
@@ -26,8 +27,6 @@ def update():
         zf = zipfile.ZipFile(path)
         uncompress_size = sum((file.file_size for file in zf.infolist()))
         extracted_size = 0
-        percent = 0
-        old_percent = 0
         for file in zf.infolist():
             extracted_size += file.file_size
             i = int((extracted_size * 100 / uncompress_size))
@@ -39,7 +38,7 @@ def update():
         copyfile('update/RiftEventTracker-master/update.exe', '_update.exe')
         copyfile('update/RiftEventTracker-master/README.md', 'README.md')
         copyfile('update/RiftEventTracker-master/RiftEventTracker.exe', 'RiftEventTracker.exe')
-        copyfile('update/RiftEventTracker-master/eventnames_element.txt', 'eventnames.txt')
+        copyfile('update/RiftEventTracker-master/eventnames_element.txt', 'eventnames_element.txt')
 
         files = os.listdir("update/RiftEventTracker-master")
         for f in files:
@@ -47,7 +46,7 @@ def update():
                 if not os.path.exists(f):
                     shutil.move("update/RiftEventTracker-master/" + f, ".")
         shutil.rmtree("update")
-    except:
+    except ValueError:
         time.sleep(1)
         update()
 
@@ -59,7 +58,7 @@ for proc in psutil.process_iter():
 print("A new version of RiftEvenetTracker is available. Update started:")
 update()
 print("\nProgram successfully updated!")
-subprocess.Popen("RiftEventTracker.exe",creationflags=subprocess.CREATE_NEW_CONSOLE)
+subprocess.Popen("RiftEventTracker.exe", creationflags=subprocess.CREATE_NEW_CONSOLE)
 PROCNAME = "update.exe"
 for proc in psutil.process_iter():
     if proc.name() == PROCNAME:
