@@ -124,7 +124,7 @@ Jagd: Geistesabwesend, Hunt: Pay No Mind, Chasse : Fermer les yeux, air
 Unterm Tisch, Under the Table, Sous la table, life
 Brodelnder Ehrgeiz, Boiling Ambition, Ambition bouillonnante, water
 Böses Erwachen, Rude Awakening, Réveil difficile, life
-Exuvie von Khargroth, The Exuvia of Khargroth, L\'Exuvie de Khargroth, unknown
+Exuvie von Khargroth, The Exuvia of Khargroth, L\'Exuvie de Khargroth, life
 Die steigenden Tiefen, The Rising Depths, Le Soulèvement des profondeurs, water
 Da erklang solch ein Rumpeln, There Arose Such A Clatter, Un grand fracas se fit alors entendre, air
 Instabil: Glutinsel, Unstable Ember Isle, Île de Braise instable, unknown
@@ -205,3 +205,11 @@ Legion des Sturms, Legion of Storm, Légion de la Tempête, unknown
 Assimilieren und Zerstören, Assimilate and Destroy, Assimilation et destruction, unknown
 Der Sturmherr zieht auf, The Tempest Rises, La Tempête gronde, unknown
 Das prekäre Gleichgewicht: Ahnket, Tipping the Scale: Ahnket, Équilibrage : Ahnket, unknown
+Der Zwielicht-Forst, The Twilight Forest, La forêt du crépuscule, death
+Die Rache der Könige, The Revenge of the Kings, La Revanche des rois, death
+Kinder der Nacht, Children of the Night, Enfants de la Nuit, death
+Der Seelenfluss, The River of Souls, Le Fleuve des Âmes, death
+Die Flucht der Altvorderen, Escape of the Ancients, Fuite des Anciens, death
+Ancient Spirits of Evil, Ancient Spirits of Evil, Ancient Spirits of Evil, death
+Verteidiger der Elemente, Defender of the Elements, Défenseur des Éléments, air
+Die Vögel, The Birds, Les oiseaux, death
