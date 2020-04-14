@@ -688,10 +688,6 @@ txt = Text(root, borderwidth = 0, highlightthickness = 0, padx=5, font=(None, co
            width=config_var['GUI']['width'], height=config_var['GUI']['height'], bg=config_var['GUI']['background'],
            fg=config_var['GUI']['foreground'])
 txt.pack()
-# label_content = StringVar()
-# label = Label(root, textvariable=label_content, anchor=NW, justify=LEFT, font=(None, config_var['GUI']['font_size']), width=config_var['GUI']['width'],
-#       height=config_var['GUI']['height'], bg=config_var['GUI']['background'], fg=config_var['GUI']['foreground'])
-# label.pack()
 txt.configure(selectbackground=txt.cget('bg'), inactiveselectbackground=txt.cget('bg'))
 txt.tag_config('fire', foreground="red")
 txt.tag_config('air', foreground="deep sky blue")
