@@ -14,7 +14,7 @@ from tkinter import *
 import codecs
 import subprocess
 
-version = "0.9.5"
+version = "0.9.6"
 
 
 def read_config(file):
@@ -161,22 +161,53 @@ def web_api(zone_id, serverlocation, url, unstable_events, voice, language, zone
     return events
 
 
+def show_text(text):
+    txt.config(state=NORMAL)
+    txt.delete(1.0, END)
+    txt.insert('end', text)
+    txt.config(state=DISABLED)
+
+
+def show_text_with_colour(events):
+    txt.config(state=NORMAL)
+    txt.delete(1.0, END)
+    for event in events:
+        if "(fire)" in event:
+            txt.insert('end', event, 'fire')
+        elif"(air)" in event:
+            txt.insert('end', event, 'air')
+        elif"(life)" in event:
+            txt.insert('end', event, 'life')
+        elif"(death)" in event:
+            txt.insert('end', event, 'death')
+        elif"(earth)" in event:
+            txt.insert('end', event, 'earth')
+        elif"(water)" in event:
+            txt.insert('end', event, 'water')
+        elif"LFM" in event:
+            txt.insert('end', event, 'lfm')
+        else:
+            txt.insert('end', event)
+    txt.config(state=DISABLED)
+
+
 def outputloop(zone_id, serverlocation, url, unstable_events, voice, language, zonenames, lfm):
     update()
-    v.set("Loading data ...\nIt may take a few seconds to connect to the Web API.\nPlease wait ...")
+    show_text("Loading data ...\nIt may take a few seconds to connect to the Web API.\nPlease wait ...")
     first_run = True
     logtext = ""
     running_log = False
     lfm_trigger = lfmtrigger()
     data_output = []
     eventlist = []
+    old_events = []
     eventtimestamp = 0
     text = ""
     previous_event = ""
     serverlocation = "log"
     if serverlocation == "log" or lfm != "no":
         guioutput = " Use /log in Rift to start tracking."
-        v.set(guioutput)
+        show_text(guioutput)
         logtext = logfilecheck()
         logtext.seek(0, 2)  # jumps to the end of the Log.txt
         zone = ""
@@ -202,11 +233,11 @@ def outputloop(zone_id, serverlocation, url, unstable_events, voice, language, z
             if line:
                 if not running_log:
                     running_log = True
-                    v.set(" Logfile found. Search for events started.")
+                    show_text(" Logfile found. Search for events started.")
                 if lfm != "no":
                     if "lf" in low_line or "looking" in low_line or "/5" in low_line or "/10" in low_line or "/20" in low_line:
                         found = False
-                        print(low_line)
+                        # print(low_line)
                         for trigger in lfm_trigger:
                             if "," in trigger[1]:
                                 triggers = trigger[1].split(",")
@@ -222,11 +253,11 @@ def outputloop(zone_id, serverlocation, url, unstable_events, voice, language, z
                                     break
                         if found:
                             found = False
-                            print (low_line)
+                            # print (low_line)
                             try:
                                 player_name = line.split("][")[1]
                                 player_name = player_name.split("]:")[0]
-                                event = [timestamp, lfm_zone, player_name]
+                                event = [timestamp, lfm_zone + " LFM", player_name]
                                 for item in data_output:
                                     if item[2] == player_name and item[1] == lfm_zone:
                                         found = True
@@ -235,8 +266,8 @@ def outputloop(zone_id, serverlocation, url, unstable_events, voice, language, z
                                     text = lfm_zone + " looking for more"
                                     Thread(target=saytext, args=(text,)).start()
                                     set_clipboard("/tell " + player_name + " +")
-                            except:
-                                print("Error")
+                            except ValueError:
+                                print(ValueError)
                 if lfm != "only" and serverlocation != "eu" and serverlocation != "us" and line[-1] == "!":
                             if language == "fr":
                                 if "serveur " in line:
@@ -286,23 +317,23 @@ def outputloop(zone_id, serverlocation, url, unstable_events, voice, language, z
                     i = 0
                     for item in data_output:
                         if len(item) == 3:
-                            if timestamp - item[0] > 300:
-                                del data_output[i]
-                                i += 1
-                        else:
                             if timestamp - item[0] > 600:
-                                del item
+                                del data_output[i]
+                        else:
+                            if timestamp - item[0] > 3600:
+                                del data_output[i]
+                        i += 1
                 if lfm != "only" and serverlocation != "log" and timestamp - eventtimestamp > 15:
                     eventtimestamp = timestamp
                     try:
                         eventlist = web_api(zone_id, serverlocation, url, unstable_events, voice, language, zonenames, lfm,
                                             first_run, eventlist)
                     except:
-                        v.set(" Web API not available.\n RiftEventTracker switches to logfile mode! Please wait ...")
+                        show_text(" Web API not available.\n RiftEventTracker switches to logfile mode! Please wait ...")
                         time.sleep(3)
                         serverlocation = "log"
                     first_run = False
-                lofile_output(serverlocation, data_output, eventlist, zonenames, language, running_log)
+                old_events = lofile_output(serverlocation, data_output, eventlist, zonenames, language, running_log, old_events)
                 time.sleep(1)  # waiting for a new input
         else:
             try:
@@ -310,13 +341,13 @@ def outputloop(zone_id, serverlocation, url, unstable_events, voice, language, z
                                     first_run, eventlist)
                 running_log = True
                 if eventlist:
-                    lofile_output(serverlocation, data_output, eventlist, zonenames, language, running_log)
+                    old_events = lofile_output(serverlocation, data_output, eventlist, zonenames, language, running_log, oldevents)
                 else:
-                    v.set(" No event running")
+                    show_text(" No event running")
                 first_run = False
                 time.sleep(15)
             except:
-                v.set(" Web API not available.\n RiftEventTracker switches to logfile mode!")
+                show_text(" Web API not available.\n RiftEventTracker switches to logfile mode!")
                 time.sleep(3)
                 serverlocation = "log"
                 logtext = logfilecheck()
@@ -420,16 +451,16 @@ def logfilecheck():
     else:
         guioutput = "Couldn't find the logfile.\nPlease use /log in Rift to create a logfile." \
                     "\nThen restart the Event Tracker."
-        v.set(guioutput)
+        show_text(guioutput)
         time.sleep(5)
         logfilecheck()
 
 
-def lofile_output(serverlocation, data_output, eventlist, zonenames, language, running_log):
-    guioutput = ""
+def lofile_output(serverlocation, data_output, eventlist, zonenames, language, running_log, old_events):
+    events = []
     if not running_log:
-        guioutput = " Use /log in Rift to search for lfm. In the lfm.txt you " \
-                    "can specify what you want to search for\n\n"
+        events.append("Use /log in Rift to search for lfm.\nIn the lfm.txt you " \
+                    "can specify what you want to search for\n\n")
     data_output = data_output + eventlist
     data_output.sort(reverse=True)
     i = 0
@@ -517,10 +548,13 @@ def lofile_output(serverlocation, data_output, eventlist, zonenames, language, r
             if m < 100:
                 m = '{:02}'.format(m)
                 if len(item) == 4:
-                    guioutput += (" " + m + " m  " + item[1] + " | " + item[2] + " | " + item[3] + '\n')
+                    events.append(" " + m + " m  " + item[1] + " | " + item[2] + " | " + item[3] + '\n')
                 else:
-                    guioutput += (" " + m + " m  " + item[1] + " | " + item[2] + "\n")
-    v.set(guioutput)
+                    events.append(" " + m + " m  " + item[1] + " | " + item[2] + "\n")
+    if old_events != events:
+        old_events = events
+        show_text_with_colour(events)
+    return(old_events)
 
 
 def lfmtrigger():
@@ -535,7 +569,8 @@ def lfmtrigger():
 
 def update():
     if config_var['Settings']['auto_update'] == "yes":
-        v.set("checking for updates ...")
+        txt.delete(1.0, END)
+        show_text("checking for updates ...\n")
         try:
             if os.path.isfile("_update.exe"):
                 if os.path.isfile("update.exe"):
@@ -648,11 +683,26 @@ root.title("Rift Event Tracker " + version)
 root.geometry(config_var['GUI']['width'] + "x" + config_var['GUI']['height'])
 root.geometry("+" + config_var['GUI']['x'] + "+" + config_var['GUI']['y'])
 root.bind("<Button-1>", leftclick)
-test = root.bind("<Button-3>", rightclick)
-v = StringVar()
-Label(root, textvariable=v, anchor=NW, justify=LEFT, font=(None, config_var['GUI']['font_size']), width=config_var['GUI']['width'],
-      height=config_var['GUI']['height'], bg=config_var['GUI']['background'], fg=config_var['GUI']['foreground']).pack()
-v.set("loading data ...")
+# test = root.bind("<Button-3>", rightclick)
+txt = Text(root, borderwidth = 0, highlightthickness = 0, padx=5, font=(None, config_var['GUI']['font_size']),
+           width=config_var['GUI']['width'], height=config_var['GUI']['height'], bg=config_var['GUI']['background'],
+           fg=config_var['GUI']['foreground'])
+txt.pack()
+# label_content = StringVar()
+# label = Label(root, textvariable=label_content, anchor=NW, justify=LEFT, font=(None, config_var['GUI']['font_size']), width=config_var['GUI']['width'],
+#       height=config_var['GUI']['height'], bg=config_var['GUI']['background'], fg=config_var['GUI']['foreground'])
+# label.pack()
+txt.configure(selectbackground=txt.cget('bg'), inactiveselectbackground=txt.cget('bg'))
+txt.tag_config('fire', foreground="red")
+txt.tag_config('air', foreground="deep sky blue")
+txt.tag_config('water', foreground="cornflower blue")
+txt.tag_config('earth', foreground="peru")
+txt.tag_config('life', foreground="spring green")
+txt.tag_config('death', foreground="medium purple")
+txt.tag_config('lfm', foreground="gold")
+
+show_text("loading data ...\n")
+
 root.protocol("WM_DELETE_WINDOW", close)
 root.attributes('-alpha', config_var['GUI']['alpha'])
 if config_var['GUI']['always_on_top'] == "yes":
