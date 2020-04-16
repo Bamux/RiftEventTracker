@@ -198,13 +198,13 @@ Kauterisierte Kalamität, Cauterized Calamity, Calamité et cautérisation, fire
 Grausiger Gartenbau, Horrific Horticulture, Horticulture terrifiante, life
 Kometeneis, Cometary Ice, Glace cométaire, water
 Xarths Schädel knacken, Cracking Xarth\'s Skull, Fracasser le Crâne de Xarth, life
-Sieg in Xarths Schädel, Victory at Xarth\'s Skull, Victoire au Crâne de Xarth, unknown
-Das prekäre Gleichgewicht: Crucia, Tipping the Scale: Crucia, Équilibrage : Crucia, unknown
-Tenebrische Rauferei, Tenebrean Tussle, Conflit ténébréen, unknown
-Legion des Sturms, Legion of Storm, Légion de la Tempête, unknown
-Assimilieren und Zerstören, Assimilate and Destroy, Assimilation et destruction, unknown
-Der Sturmherr zieht auf, The Tempest Rises, La Tempête gronde, unknown
-Das prekäre Gleichgewicht: Ahnket, Tipping the Scale: Ahnket, Équilibrage : Ahnket, unknown
+Sieg in Xarths Schädel, Victory at Xarth\'s Skull, Victoire au Crâne de Xarth, life
+Das prekäre Gleichgewicht: Crucia, Tipping the Scale: Crucia, Équilibrage : Crucia, air
+Tenebrische Rauferei, Tenebrean Tussle, Conflit ténébréen, air
+Legion des Sturms, Legion of Storm, Légion de la Tempête, air
+Assimilieren und Zerstören, Assimilate and Destroy, Assimilation et destruction, air
+Der Sturmherr zieht auf, The Tempest Rises, La Tempête gronde, air
+Das prekäre Gleichgewicht: Ahnket, Tipping the Scale: Ahnket, Équilibrage : Ahnket, air
 Der Zwielicht-Forst, The Twilight Forest, La forêt du crépuscule, death
 Die Rache der Könige, The Revenge of the Kings, La Revanche des rois, death
 Kinder der Nacht, Children of the Night, Enfants de la Nuit, death
