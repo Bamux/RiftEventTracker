@@ -14,7 +14,7 @@ from tkinter import *
 import codecs
 import subprocess
 
-version = "0.9.7"
+version = "0.9.8"
 
 
 def read_config(file):
@@ -30,7 +30,14 @@ def read_config(file):
             config['Settings']['auto_update'] = config['Settings'].get("auto_update", "yes")
             config['Settings']['logfile'] = config['Settings'].get("logfile", "Log.txt")
             config['GUI']['always_on_top'] = config['GUI'].get("always_on_top", "no")
-            config['GUI']['font_size'] = config['GUI'].get("font_size", "9")
+            config['GUI']['fire'] = config['GUI'].get("fire", "red")
+            config['GUI']['air'] = config['GUI'].get("air", "deep sky blue")
+            config['GUI']['water'] = config['GUI'].get("water", "cornflower blue")
+            config['GUI']['earth'] = config['GUI'].get("earth", "peru")
+            config['GUI']['life'] = config['GUI'].get("life", "spring green")
+            config['GUI']['death'] = config['GUI'].get("death", "medium purple")
+            config['GUI']['unstable'] = config['GUI'].get("unstable", "white")
+            config['GUI']['lfm'] = config['GUI'].get("lfm", "gold")
         except Exception as e:
             print(e)
             config = write_new_config(configfile)
@@ -64,16 +71,24 @@ def write_new_config(file):
     settings['logfile'] = 'Log.txt'
     config['GUI'] = {}
     gui = config['GUI']
-    gui['x'] = '325'
-    gui['y'] = '200'
-    gui['width'] = '400'
-    gui['height'] = '154'
     gui['background'] = 'black'
     gui['foreground'] = 'white'
+    gui['fire'] = 'red'
+    gui['air'] = 'deep sky blue'
+    gui['water'] = 'cornflower blue'
+    gui['earth'] = 'peru'
+    gui['life'] = 'spring green'
+    gui['death'] = 'medium purple'
+    gui['unstable'] = 'white'
+    gui['lfm'] = 'gold'
     gui['alpha'] = '0.7'
     gui['borderless'] = 'no'
     gui['always_on_top'] = 'yes'
     gui['font_size'] = '9'
+    gui['x'] = '325'
+    gui['y'] = '200'
+    gui['width'] = '400'
+    gui['height'] = '154'
     expansions = sorted(zones.keys())
     for expansion in expansions:
         sorted_zones = sorted(zones[expansion].items(), key=lambda x: x[1])
@@ -166,6 +181,7 @@ def show_text(text):
 
 
 def show_text_with_colour(events):
+    # print(events)
     txt.config(state=NORMAL)
     txt.delete(1.0, END)
     for event in events:
@@ -181,6 +197,8 @@ def show_text_with_colour(events):
             txt.insert('end', event, 'earth')
         elif "(water)" in event:
             txt.insert('end', event, 'water')
+        elif "Unstable" in event:
+            txt.insert('end', event, 'unstable')
         elif "LFM" in event:
             txt.insert('end', event, 'lfm')
         else:
@@ -196,7 +214,7 @@ def outputloop(zone_id, url, unstable_events, voice, language, zonenames, lfm):
     lfm_trigger = lfmtrigger()
     data_output = []
     eventlist = []
-    old_events = []
+    old_events = (0, "")
     eventtimestamp = 0
     previous_event = ""
     serverlocation = "log"
@@ -372,6 +390,7 @@ def close():
     config['Settings']['lfm'] = config['Settings'].get("lfm", "no")
     config['Settings']['auto_update'] = config['Settings'].get("auto_update", "yes")
     config['Settings']['logfile'] = config_var['Settings']['logfile']
+
     config['GUI']['x'] = (str(root.winfo_x()))
     config['GUI']['y'] = (str(root.winfo_y()))
     config['GUI']['width'] = (str(root.winfo_width()))
@@ -379,6 +398,16 @@ def close():
     config["GUI"]['borderless'] = borderless
     config['GUI']['always_on_top'] = config_var['GUI']['always_on_top']
     config['GUI']['font_size'] = config['GUI'].get("font_size", "9")
+
+    config['GUI']['fire'] = config['GUI'].get("fire", "red")
+    config['GUI']['air'] = config['GUI'].get("air", "deep sky blue")
+    config['GUI']['water'] = config['GUI'].get("water", "cornflower blue")
+    config['GUI']['earth'] = config['GUI'].get("earth", "peru")
+    config['GUI']['life'] = config['GUI'].get("life", "spring green")
+    config['GUI']['death'] = config['GUI'].get("death", "medium purple")
+    config['GUI']['unstable'] = config['GUI'].get("unstable", "white")
+    config['GUI']['lfm'] = config['GUI'].get("lfm", "gold")
+
     expansions = sorted(zones.keys())
     for expansion in expansions:
         sorted_zones = sorted(zones[expansion].items(), key=lambda x: x[1])
@@ -538,8 +567,9 @@ def lofile_output(serverlocation, data_output, eventlist, zonenames, language, r
                 events.append(" " + m + " m  " + item[1] + " | " + item[2] + " | " + item[3] + '\n')
             else:
                 events.append(" " + m + " m  " + item[1] + " | " + item[2] + "\n")
-    if old_events != events:
-        old_events = events
+    timestamp = int(math.floor(time.time()))
+    if timestamp - old_events[0] >= 1 and old_events[1] != events:
+        old_events = timestamp, events
         show_text_with_colour(events)
     return old_events
 
@@ -675,13 +705,14 @@ txt = Text(root, borderwidth=0, highlightthickness=0, padx=5, font=(None, config
            fg=config_var['GUI']['foreground'])
 txt.pack()
 txt.configure(selectbackground=txt.cget('bg'), inactiveselectbackground=txt.cget('bg'))
-txt.tag_config('fire', foreground="red")
-txt.tag_config('air', foreground="deep sky blue")
-txt.tag_config('water', foreground="cornflower blue")
-txt.tag_config('earth', foreground="peru")
-txt.tag_config('life', foreground="spring green")
-txt.tag_config('death', foreground="medium purple")
-txt.tag_config('lfm', foreground="gold")
+txt.tag_config('fire', foreground=config_var['GUI']['fire'])
+txt.tag_config('air', foreground=config_var['GUI']['air'])
+txt.tag_config('water', foreground=config_var['GUI']['water'])
+txt.tag_config('earth', foreground=config_var['GUI']['earth'])
+txt.tag_config('life', foreground=config_var['GUI']['life'])
+txt.tag_config('death', foreground=config_var['GUI']['death'])
+txt.tag_config('unstable', foreground=config_var['GUI']['unstable'])
+txt.tag_config('lfm', foreground=config_var['GUI']['lfm'])
 
 show_text("loading data ...\n")
 
@@ -692,7 +723,6 @@ if config_var['GUI']['always_on_top'] == "yes":
 if config_var["GUI"]['borderless'] == "yes":
     root.overrideredirect(1)
 
-Thread(target=outputloop, args=(zoneid, webapi,
-                                config_var['Settings']['unstable_events'], config_var['Settings']['voice'],
-                                config_var['Settings']['language'], zone_names, config_var['Settings']['lfm'])).start()
+Thread(target=outputloop, args=(zoneid, webapi, config_var['Settings']['unstable_events'], config_var['Settings'][
+    'voice'], config_var['Settings']['language'], zone_names, config_var['Settings']['lfm'])).start()
 mainloop()
