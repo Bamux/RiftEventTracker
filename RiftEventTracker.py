@@ -14,7 +14,7 @@ from tkinter import *
 import codecs
 import subprocess
 
-version = "0.9.8"
+version = "0.9.9"
 
 
 def read_config(file):
@@ -181,7 +181,6 @@ def show_text(text):
 
 
 def show_text_with_colour(events):
-    # print(events)
     txt.config(state=NORMAL)
     txt.delete(1.0, END)
     for event in events:
@@ -216,14 +215,12 @@ def outputloop(zone_id, url, unstable_events, voice, language, zonenames, lfm):
     eventlist = []
     old_events = (0, "")
     eventtimestamp = 0
-    previous_event = ""
     serverlocation = "log"
     if serverlocation == "log" or lfm != "no":
         guioutput = " Use /log in Rift to start tracking."
         show_text(guioutput)
         logtext = logfilecheck()
         logtext.seek(0, 2)  # jumps to the end of the Log.txt
-        previous_event = []
     while True:
         if serverlocation == "log" or lfm != "no":
             if not logtext:
@@ -302,11 +299,10 @@ def outputloop(zone_id, url, unstable_events, voice, language, zonenames, lfm):
                                 event = line.split("[")[2]
                                 event = event.split("]")[0]
                                 event = [timestamp, zone, shardname, event]
-                                if previous_event and event[3] == previous_event[3] and \
-                                        timestamp - previous_event[0] < 10:
-                                    condition = False
+                                for *_, shardname_data_output, event_data_output in data_output:
+                                    if event[3] in event_data_output and event[2] == shardname_data_output:
+                                        condition = False
                                 if condition:
-                                    previous_event = event
                                     data_output += [event]
                                     beginning = "Event in"
                                     end = "on"

@@ -197,8 +197,8 @@ Plattenverschiebung, Tectonic Drift, Dérive tectonique, earth
 Kauterisierte Kalamität, Cauterized Calamity, Calamité et cautérisation, fire
 Grausiger Gartenbau, Horrific Horticulture, Horticulture terrifiante, life
 Kometeneis, Cometary Ice, Glace cométaire, water
-Xarths Schädel knacken, Cracking Xarth\'s Skull, Fracasser le Crâne de Xarth, life
-Sieg in Xarths Schädel, Victory at Xarth\'s Skull, Victoire au Crâne de Xarth, life
+Xarths Schädel knacken, Cracking Xarth's Skull, Fracasser le Crâne de Xarth, life
+Sieg in Xarths Schädel, Victory at Xarth's Skull, Victoire au Crâne de Xarth, unknown
 Das prekäre Gleichgewicht: Crucia, Tipping the Scale: Crucia, Équilibrage : Crucia, air
 Tenebrische Rauferei, Tenebrean Tussle, Conflit ténébréen, air
 Legion des Sturms, Legion of Storm, Légion de la Tempête, air
