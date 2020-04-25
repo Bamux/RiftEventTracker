@@ -13,7 +13,6 @@ try:
     import pythoncom
 except ImportError:
   print("Trying to Install required module: pywin32\n")
-  os.system('python -m pip install pywin32')
 # -- above lines try to install requests module if not present
 # -- if all went well, import required module again ( for global access)
 from threading import Thread
@@ -26,7 +25,7 @@ import subprocess
 
 version = "0.9.9"
 
-
+print(os.system)
 def read_config(file):
     if os.path.isfile(file):
         try:

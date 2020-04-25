@@ -39,14 +39,6 @@ Features:
 - to activate the lfm search mode you have to change the config.ini: lfm = yes
 - add new raids, experts or other activities to lfm.txt for e.g. Bastion of Steal = BoS
 - to deactivate a raid, simply place ; or # at the beginning of the line
-
-## Activate your Text to Speech voice
-For Python to be able to handle events via text to speech you need to install an additional library.
-The command pip install xyz must be executed in the same folder where pip.exe is located.
-The pip.exe file is located in the Python/Scrips folder. The easiest way is to go to the Python/Scripts folder and see if you can find the pip.exe there. Shift-rightclicking an empty spot in Explorer there and select "Open with PowerShell" and enter the following:
-- pip install pywin32
-
-This guide may help: http://www.qarevolution.com/5-step-install-pywin32-using-pip/
   
 ## Change your Text to Speech voice
 - Open the Windows Text to Speech Engine. Default folder is C:\Windows\SysWOW64\Speech\SpeechUX\sapi.cpl
