@@ -4,11 +4,15 @@ import json
 import time
 try:
     import requests
+except:
+    print("Please Install the requests library (pip install requests)")
+try:
+    import requests
     import win32com.client
     import win32clipboard
     import pythoncom
 except:
-    pass
+    print("Please Install the pywin 32 library (pip install pywin32)")
 from threading import Thread
 import os
 import math
