@@ -9,8 +9,8 @@ Features:
 - with strg + v you can quickly answer a player who is looking for other players with lfm
 
 ## Instructions:
+- install Python https://www.python.org/ (Python is one of the most popular programming languages and is needed for strating *.py files.)
 - start Rift and write /log in your chat window, Rift then creates a log.txt in your Documents/Rift folder
-- install Python https://www.python.org/
 - start RiftEventTracker.py
 - with left mouse click on the Rift Event Tracker window you can start/end the borderless modus
 - if you want to use the overlay display in Rift you have to use Rift in the Fullscreen Windowed Mode
