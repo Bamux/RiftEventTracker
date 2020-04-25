@@ -9,6 +9,7 @@ import math
 import configparser
 from tkinter import *
 import codecs
+import subprocess
 
 try:
     import win32com.client
@@ -16,12 +17,12 @@ try:
     import pythoncom
 except ImportError:
   print("Trying to Install required module: pywin32\n")
-# -- above lines try to install pywin32 module if not present
+  os.system('python -m pip install pywin32')
+# -- above lines try to install requests module if not present
 # -- if all went well, import required module again ( for global access)
 
 version = "0.9.9"
 
-print(os.system)
 def read_config(file):
     if os.path.isfile(file):
         try:
