@@ -20,7 +20,7 @@ except ImportError:
 # -- above lines try to install requests module if not present
 # -- if all went well, import required module again ( for global access)
 
-version = "1.0.1"
+version = "1.0.2"
 
 
 def read_config(file):
