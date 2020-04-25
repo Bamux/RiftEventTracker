@@ -3,25 +3,21 @@
 import json
 import time
 import os
-# try:
-#     import requests
-# except:
-#     print("Please Install the requests library (pip install requests)")
-try:
-    import win32com.client
-    import win32clipboard
-    import pythoncom
-except ImportError:
-  print("Trying to Install required module: pywin32\n")
-# -- above lines try to install requests module if not present
-# -- if all went well, import required module again ( for global access)
 from threading import Thread
 import os
 import math
 import configparser
 from tkinter import *
 import codecs
-# import subprocess
+
+try:
+    import win32com.client
+    import win32clipboard
+    import pythoncom
+except ImportError:
+  print("Trying to Install required module: pywin32\n")
+# -- above lines try to install pywin32 module if not present
+# -- if all went well, import required module again ( for global access)
 
 version = "0.9.9"
 
