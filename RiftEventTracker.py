@@ -321,30 +321,29 @@ def outputloop(zone_id, url, unstable_events, voice, language, zonenames, lfm):
                                     Thread(target=saytext, args=(text,)).start()
                             break
             else:
-                pass
-                # if data_output:
-                #     i = 0
-                #     for item in data_output:
-                #         if len(item) == 3:
-                #             if timestamp - item[0] > 600:
-                #                 del data_output[i]
-                #         else:
-                #             if timestamp - item[0] > 3600:
-                #                 del data_output[i]
-                #         i += 1
-                # if lfm != "only" and serverlocation != "log" and timestamp - eventtimestamp > 15:
-                #     eventtimestamp = timestamp
-                #     try:
-                #         eventlist = web_api(zone_id, serverlocation, url, unstable_events, voice, language, zonenames)
-                #     except Exception as e:
-                #         print(e)
-                #         show_text(" Web API not available.\n "
-                #                   "RiftEventTracker switches to logfile mode! Please wait ...")
-                #         time.sleep(3)
-                #         serverlocation = "log"
-                # old_events = lofile_output(serverlocation, data_output, eventlist, zonenames, language,
-                #                            running_log, old_events)
-                # time.sleep(1)  # waiting for a new input
+                if data_output:
+                    i = 0
+                    for item in data_output:
+                        if len(item) == 3:
+                            if timestamp - item[0] > 600:
+                                del data_output[i]
+                        else:
+                            if timestamp - item[0] > 3600:
+                                del data_output[i]
+                        i += 1
+                if lfm != "only" and serverlocation != "log" and timestamp - eventtimestamp > 15:
+                    eventtimestamp = timestamp
+                    try:
+                        eventlist = web_api(zone_id, serverlocation, url, unstable_events, voice, language, zonenames)
+                    except Exception as e:
+                        print(e)
+                        show_text(" Web API not available.\n "
+                                  "RiftEventTracker switches to logfile mode! Please wait ...")
+                        time.sleep(3)
+                        serverlocation = "log"
+                old_events = lofile_output(serverlocation, data_output, eventlist, zonenames, language,
+                                           running_log, old_events)
+                time.sleep(1)  # waiting for a new input
         else:
             try:
                 eventlist = web_api(zone_id, serverlocation, url, unstable_events, voice, language, zonenames)
