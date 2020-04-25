@@ -206,7 +206,7 @@ def show_text_with_colour(events):
 
 
 def outputloop(zone_id, url, unstable_events, voice, language, zonenames, lfm):
-    update()
+    # update()
     show_text("Loading data ...\nIt may take a few seconds to connect to the Web API.\nPlease wait ...")
     logtext = ""
     running_log = False
