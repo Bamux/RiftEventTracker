@@ -21,7 +21,7 @@ import math
 import configparser
 from tkinter import *
 import codecs
-import subprocess
+# import subprocess
 
 version = "0.9.9"
 
