@@ -487,72 +487,7 @@ def lofile_output(serverlocation, data_output, eventlist, zonenames, language, r
     data_output = data_output + eventlist
     data_output.sort(reverse=True)
     for item in data_output:
-        if serverlocation == "us" or serverlocation == "eu":
-            if language == "eng":
-                if item[2] == "Brutwacht":
-                    for name in zonenames:
-                        if name[0] == item[3]:
-                            if name[3] != "unknown":
-                                element = name[3]
-                                item[3] = name[1] + " (" + element + ")"
-                            else:
-                                item[3] = name[1]
-                            break
-                elif item[2] == "Brisesol":
-                    for name in zonenames:
-                        if name[2] == item[3]:
-                            if name[3] != "unknown":
-                                element = name[3]
-                                item[3] = name[1] + " (" + element + ")"
-                            else:
-                                item[3] = name[1]
-                            break
-                else:
-                    for name in zonenames:
-                        if name[1] == item[3]:
-                            if name[3] != "unknown":
-                                element = name[3]
-                                item[3] = name[1] + " (" + element + ")"
-                            else:
-                                item[3] = name[1]
-                            break
-            elif language == "ger":
-                for name in zonenames:
-                    if item[2] == "Brisesol":
-                        if name[2] == item[3]:
-                            if name[3] != "unknown":
-                                element = name[3]
-                                item[3] = name[0] + " (" + element + ")"
-                            else:
-                                item[3] = name[0]
-                            break
-                    else:
-                        if name[1] == item[3]:
-                            if name[3] != "unknown":
-                                element = name[3]
-                                item[3] = name[0] + " (" + element + ")"
-                            else:
-                                item[3] = name[0]
-                            break
-            elif language == "fr":
-                for name in zonenames:
-                    if item[2] == "Brutwacht":
-                        if name[0] == item[3]:
-                            if name[3] != "unknown":
-                                element = name[3]
-                                item[3] = name[2] + " (" + element + ")"
-                            else:
-                                item[3] = name[2]
-                            break
-                    else:
-                        if name[1] == item[3]:
-                            if name[3] != "unknown":
-                                element = name[3]
-                                item[3] = name[2] + " (" + element + ")"
-                            else:
-                                item[3] = name[2]
-                            break
-        elif serverlocation == "log":
+        if serverlocation == "log":
             if len(item) > 3:
                 for name in zonenames:
                     if item[3] in name:
@@ -584,32 +519,6 @@ def lfmtrigger():
             if "#" not in item and ";" not in item:
                 lfm_trigger += [[item.split("=")[0].strip(), item.split("=")[1].strip().lower()]]
     return lfm_trigger
-
-
-# def update():
-#     if config_var['Settings']['auto_update'] == "yes":
-#         txt.delete(1.0, END)
-#         show_text("checking for updates ...\n")
-#         try:
-#             if os.path.isfile("_update.exe"):
-#                 if os.path.isfile("update.exe"):
-#                     os.remove("update.exe")
-#                 os.rename('_update.exe', 'update.exe')
-#             url = "https://raw.githubusercontent.com/Bamux/RiftEventTracker/master/README.md"
-#             path = "update.exe"
-#             latest_version = requests.get(url).text  # => str, not bytes
-#             latest_version = latest_version.split("## Rift Event Tracker ")[1]
-#             latest_version = latest_version.split("![Overlay]")[0]
-#             latest_version = latest_version.strip()
-#             if version < latest_version:
-#                 print("Old Version: " + version + " New Version: " + latest_version)
-#                 print("Starting update process")
-#                 subprocess.Popen(path, shell=True)
-#                 time.sleep(5)
-#                 os._exit(1)
-#         except Exception as e:
-#             print(e)
-
 
 zones = {
     'Prophecy of Ahnket': {
