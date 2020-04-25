@@ -7,7 +7,6 @@ try:
 except:
     print("Please Install the requests library (pip install requests)")
 try:
-    import requests
     import win32com.client
     import win32clipboard
     import pythoncom
