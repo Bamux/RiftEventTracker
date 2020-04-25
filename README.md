@@ -10,7 +10,8 @@ Features:
 
 ## Instructions:
 - start Rift and write /log in your chat window, Rift then creates a log.txt in your Documents/Rift folder
-- start RiftEventTracker.exe
+- install Python https://www.python.org/
+- start RiftEventTracker.py
 - with left mouse click on the Rift Event Tracker window you can start/end the borderless modus
 - with right mouse click you can close the window
 - if you want to use the overlay display in Rift you have to use Rift in the Fullscreen Windowed Mode
