@@ -42,8 +42,8 @@ Features:
 
 ## Activate your Text to Speech voice
 For Python to be able to handle events via text to speech you need to install an additional library. Open the Windows search window (win + r) and enter cmd.exe there. In the window that opens, enter the following:
-pip install pywin32
-confirm the entry with Enter.
+- pip install pywin32
+- confirm the entry with Enter
   
 ## Change your Text to Speech voice
 - Open the Windows Text to Speech Engine. Default folder is C:\Windows\SysWOW64\Speech\SpeechUX\sapi.cpl
