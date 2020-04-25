@@ -2,6 +2,7 @@
 
 import json
 import time
+import os
 # try:
 #     import requests
 # except:
@@ -10,8 +11,11 @@ try:
     import win32com.client
     import win32clipboard
     import pythoncom
-except:
-   print("Please Install the pywin 32 library (pip install pywin32)")
+except ImportError:
+  print("Trying to Install required module: pywin32\n")
+  os.system('python -m pip install pywin32')
+# -- above lines try to install requests module if not present
+# -- if all went well, import required module again ( for global access)
 from threading import Thread
 import os
 import math
