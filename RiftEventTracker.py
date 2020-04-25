@@ -1,11 +1,14 @@
 # -*- coding: utf-8 -*-
 
-import requests
 import json
 import time
-import win32com.client
-import win32clipboard
-import pythoncom
+try:
+    import requests
+    import win32com.client
+    import win32clipboard
+    import pythoncom
+except:
+    pass
 from threading import Thread
 import os
 import math
@@ -206,7 +209,7 @@ def show_text_with_colour(events):
 
 
 def outputloop(zone_id, url, unstable_events, voice, language, zonenames, lfm):
-    # update()
+    update()
     show_text("Loading data ...\nIt may take a few seconds to connect to the Web API.\nPlease wait ...")
     logtext = ""
     running_log = False
