@@ -2,16 +2,16 @@
 
 import json
 import time
-try:
-    import requests
-except:
-    print("Please Install the requests library (pip install requests)")
+# try:
+#     import requests
+# except:
+#     print("Please Install the requests library (pip install requests)")
 try:
     import win32com.client
     import win32clipboard
     import pythoncom
 except:
-    print("Please Install the pywin 32 library (pip install pywin32)")
+   print("Please Install the pywin 32 library (pip install pywin32)")
 from threading import Thread
 import os
 import math
@@ -212,7 +212,7 @@ def show_text_with_colour(events):
 
 
 def outputloop(zone_id, url, unstable_events, voice, language, zonenames, lfm):
-    update()
+    # update()
     show_text("Loading data ...\nIt may take a few seconds to connect to the Web API.\nPlease wait ...")
     logtext = ""
     running_log = False
@@ -321,29 +321,30 @@ def outputloop(zone_id, url, unstable_events, voice, language, zonenames, lfm):
                                     Thread(target=saytext, args=(text,)).start()
                             break
             else:
-                if data_output:
-                    i = 0
-                    for item in data_output:
-                        if len(item) == 3:
-                            if timestamp - item[0] > 600:
-                                del data_output[i]
-                        else:
-                            if timestamp - item[0] > 3600:
-                                del data_output[i]
-                        i += 1
-                if lfm != "only" and serverlocation != "log" and timestamp - eventtimestamp > 15:
-                    eventtimestamp = timestamp
-                    try:
-                        eventlist = web_api(zone_id, serverlocation, url, unstable_events, voice, language, zonenames)
-                    except Exception as e:
-                        print(e)
-                        show_text(" Web API not available.\n "
-                                  "RiftEventTracker switches to logfile mode! Please wait ...")
-                        time.sleep(3)
-                        serverlocation = "log"
-                old_events = lofile_output(serverlocation, data_output, eventlist, zonenames, language,
-                                           running_log, old_events)
-                time.sleep(1)  # waiting for a new input
+                pass
+                # if data_output:
+                #     i = 0
+                #     for item in data_output:
+                #         if len(item) == 3:
+                #             if timestamp - item[0] > 600:
+                #                 del data_output[i]
+                #         else:
+                #             if timestamp - item[0] > 3600:
+                #                 del data_output[i]
+                #         i += 1
+                # if lfm != "only" and serverlocation != "log" and timestamp - eventtimestamp > 15:
+                #     eventtimestamp = timestamp
+                #     try:
+                #         eventlist = web_api(zone_id, serverlocation, url, unstable_events, voice, language, zonenames)
+                #     except Exception as e:
+                #         print(e)
+                #         show_text(" Web API not available.\n "
+                #                   "RiftEventTracker switches to logfile mode! Please wait ...")
+                #         time.sleep(3)
+                #         serverlocation = "log"
+                # old_events = lofile_output(serverlocation, data_output, eventlist, zonenames, language,
+                #                            running_log, old_events)
+                # time.sleep(1)  # waiting for a new input
         else:
             try:
                 eventlist = web_api(zone_id, serverlocation, url, unstable_events, voice, language, zonenames)
@@ -586,29 +587,29 @@ def lfmtrigger():
     return lfm_trigger
 
 
-def update():
-    if config_var['Settings']['auto_update'] == "yes":
-        txt.delete(1.0, END)
-        show_text("checking for updates ...\n")
-        try:
-            if os.path.isfile("_update.exe"):
-                if os.path.isfile("update.exe"):
-                    os.remove("update.exe")
-                os.rename('_update.exe', 'update.exe')
-            url = "https://raw.githubusercontent.com/Bamux/RiftEventTracker/master/README.md"
-            path = "update.exe"
-            latest_version = requests.get(url).text  # => str, not bytes
-            latest_version = latest_version.split("## Rift Event Tracker ")[1]
-            latest_version = latest_version.split("![Overlay]")[0]
-            latest_version = latest_version.strip()
-            if version < latest_version:
-                print("Old Version: " + version + " New Version: " + latest_version)
-                print("Starting update process")
-                subprocess.Popen(path, shell=True)
-                time.sleep(5)
-                os._exit(1)
-        except Exception as e:
-            print(e)
+# def update():
+#     if config_var['Settings']['auto_update'] == "yes":
+#         txt.delete(1.0, END)
+#         show_text("checking for updates ...\n")
+#         try:
+#             if os.path.isfile("_update.exe"):
+#                 if os.path.isfile("update.exe"):
+#                     os.remove("update.exe")
+#                 os.rename('_update.exe', 'update.exe')
+#             url = "https://raw.githubusercontent.com/Bamux/RiftEventTracker/master/README.md"
+#             path = "update.exe"
+#             latest_version = requests.get(url).text  # => str, not bytes
+#             latest_version = latest_version.split("## Rift Event Tracker ")[1]
+#             latest_version = latest_version.split("![Overlay]")[0]
+#             latest_version = latest_version.strip()
+#             if version < latest_version:
+#                 print("Old Version: " + version + " New Version: " + latest_version)
+#                 print("Starting update process")
+#                 subprocess.Popen(path, shell=True)
+#                 time.sleep(5)
+#                 os._exit(1)
+#         except Exception as e:
+#             print(e)
 
 
 zones = {
