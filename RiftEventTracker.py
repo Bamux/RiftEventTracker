@@ -22,8 +22,7 @@ except:
         print("To activate the sound output, you must restart the program!")
     except:
         print("Could not install the text to speech drivers!")
-# -- above lines try to install pywin32 module if not present
-# -- if all went well, import required module again ( for global access)
+
 
 version = "1.0.3"
 
