@@ -11,12 +11,6 @@ import subprocess
 import sys
 
 
-def import_text_to_speech():
-    import win32com.client
-    import win32clipboard
-    import pythoncom
-
-
 try:
     import win32com.client
     import win32clipboard
