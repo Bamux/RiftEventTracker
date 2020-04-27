@@ -21,7 +21,7 @@ except ImportError:
         subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'pywin32'])
         print("To activate the sound output, you must restart the program.!")
     except ImportError:
-        print("Could not install the sound drivers!")
+        print("Could not install the text to speech drivers!")
 # -- above lines try to install pywin32 module if not present
 # -- if all went well, import required module again ( for global access)
 
