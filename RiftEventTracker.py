@@ -17,8 +17,11 @@ try:
     import pythoncom
 except ImportError:
     print("Trying to Install required module: pywin32 for text to speech announcements:")
-    subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'pywin32'])
-    print("To activate the sound output, you must restart the program.!")
+    try:
+        subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'pywin32'])
+        print("To activate the sound output, you must restart the program.!")
+    except ImportError:
+        print("Could not install the sound drivers!")
 # -- above lines try to install pywin32 module if not present
 # -- if all went well, import required module again ( for global access)
 
@@ -224,7 +227,6 @@ def outputloop(unstable_events, language, zonenames, lfm):
                                     set_clipboard("/tell " + player_name + " +")
                             except Exception as e:
                                 print(e)
-                                pass
                 if lfm != "only" and serverlocation != "eu" and serverlocation != "us" and line[-1] == "!":
                     if language == "fr":
                         if "serveur " in line:
