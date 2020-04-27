@@ -15,12 +15,12 @@ try:
     import win32com.client
     import win32clipboard
     import pythoncom
-except ImportError:
+except:
     print("Trying to Install required module: pywin32 for text to speech announcements:")
     try:
         subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'pywin32'])
-        print("To activate the sound output, you must restart the program.!")
-    except ImportError:
+        print("To activate the sound output, you must restart the program!")
+    except:
         print("Could not install the text to speech drivers!")
 # -- above lines try to install pywin32 module if not present
 # -- if all went well, import required module again ( for global access)
