@@ -19,8 +19,7 @@ except ImportError:
     print("Trying to Install required module: pywin32 for text to speech announcements:")
     subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'pywin32'])
     print("To activate the sound output, you must restart the program.!")
-
-# -- above lines try to install requests module if not present
+# -- above lines try to install pywin32 module if not present
 # -- if all went well, import required module again ( for global access)
 
 version = "1.0.3"
