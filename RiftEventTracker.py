@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 
-import time
-from threading import Thread
-import os
-import math
-import configparser
-from tkinter import *
 import codecs
+import configparser
+import math
+import os
 import subprocess
 import sys
+import time
+from threading import Thread
+from tkinter import *
 
 
 try:
@@ -18,6 +18,7 @@ try:
 except:
     print("Trying to Install required module: pywin32 for text to speech announcements:")
     try:
+        print("Python installation path:", sys.executable)
         subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'pywin32'])
         print("To activate the sound output, you must restart the program!")
     except:
