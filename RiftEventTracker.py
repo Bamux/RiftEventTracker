@@ -22,8 +22,11 @@ except:
         subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'pywin32'])
         print("To activate the sound output, you must restart the program!")
     except:
-        print("Could not install the text to speech drivers! Try to start the program as admin.\n"
-              "Write me a message in Rift Forum, Github or Discord: Bamu#0943 and I will try to find a solution.")
+        try:
+            subprocess.check_call([sys.executable, '-m', 'pip', 'install', '--user', 'pywin32'])
+        except:
+            print("Could not install the text to speech drivers! Try to start the program as admin.\n "
+                  "Write me a message in Rift Forum, Github or Discord: Bamu#0943 and I will try to find a solution.")
 
 
 version = "1.0.3"
