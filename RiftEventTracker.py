@@ -29,7 +29,7 @@ except:
                   "Write me a message in Rift Forum, Github or Discord: Bamu#0943 and I will try to find a solution.")
 
 
-version = "1.0.3"
+version = "1.0.4"
 
 
 def read_config(file):
