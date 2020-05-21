@@ -356,7 +356,7 @@ def close():
 
 
 def leftclick(event):
-    print(event)
+    # print(event)
     global borderless
     if borderless == "no":
         root.overrideredirect(1)
@@ -367,7 +367,7 @@ def leftclick(event):
 
 
 def rightclick(event):
-    print(event)
+    # print(event)
     time.sleep(0.3)
     close()
 
